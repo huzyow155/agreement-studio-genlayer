@@ -98,6 +98,57 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
     )
   }
 
+  const formatLockProblem = (rawProblem: string): { title: string; description: string } => {
+    if (rawProblem.includes('need at least 4 scenarios')) {
+      return {
+        title: 'Insufficient Scenarios',
+        description: 'At least 4 adversarial edge cases are required before locking to ensure comprehensive test coverage.',
+      }
+    }
+    if (rawProblem.includes('need at least 2 distinct expected labels')) {
+      return {
+        title: 'Diverse Outcomes Needed',
+        description: 'Scenarios must test at least 2 distinct outcome labels (e.g., both DELIVERED and BREACH).',
+      }
+    }
+    if (rawProblem.includes('party has proposed no scenario')) {
+      const addr = rawProblem.split(': ')[1] || ''
+      return {
+        title: 'Counterparty Participation',
+        description: `Both counterparties must propose at least one scenario. Missing contribution from ${short(addr)}.`,
+      }
+    }
+    if (rawProblem.includes('party has not signed')) {
+      const addr = rawProblem.split(': ')[1] || ''
+      return {
+        title: 'Pending Dual Signature',
+        description: `Both counterparties must sign clause v${spec.version}. Waiting for signature from ${short(addr)}.`,
+      }
+    }
+    if (rawProblem.includes('not run at current version')) {
+      return {
+        title: 'Stale Scenarios',
+        description: `${rawProblem}. Click "Run Consensus" to validate against clause v${spec.version}.`,
+      }
+    }
+    if (rawProblem.includes('is red')) {
+      return {
+        title: 'Ambiguity or Mismatch',
+        description: `${rawProblem}. Amend clause wording or adjust scenarios so all tests reach green consensus.`,
+      }
+    }
+    if (rawProblem.includes('no canary scenario available')) {
+      return {
+        title: 'Canary Allocation',
+        description: 'A non-anchor scenario must be available for dynamic canary tamper detection during adjudication.',
+      }
+    }
+    return {
+      title: 'Condition Pending',
+      description: rawProblem,
+    }
+  }
+
   return (
     <div className="bg-white border border-[#e7e5e0] rounded-xl p-5 sm:p-6 shadow-xs space-y-5">
       <div>
@@ -143,6 +194,30 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
           >
             Switch Account in MetaMask
           </button>
+        </div>
+      )}
+
+      {/* Plain-Language Explanation of Why Lock is Disabled */}
+      {!readyToLock && suiteReport?.lock_problems && suiteReport.lock_problems.length > 0 && (
+        <div className="p-4 bg-amber-50/70 border border-amber-200/80 rounded-xl space-y-2.5 text-xs text-amber-950">
+          <div className="font-semibold flex items-center gap-2 text-amber-900">
+            <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+            <span>Why is Lock disabled? Complete these steps first:</span>
+          </div>
+          <div className="space-y-1.5 pt-1">
+            {suiteReport.lock_problems.map((problem, i) => {
+              const info = formatLockProblem(problem)
+              return (
+                <div key={i} className="flex items-start gap-2 pl-1 font-sans">
+                  <span className="text-amber-600 font-bold leading-relaxed">•</span>
+                  <div>
+                    <strong className="text-amber-900 font-semibold">{info.title}:</strong>{' '}
+                    <span className="text-amber-800/90 leading-relaxed">{info.description}</span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
       )}
 
