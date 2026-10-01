@@ -36,9 +36,9 @@ export const HeroSection: React.FC<HeroSectionProps> = memo(({
       {/* Atmospheric Light Fields (Champagne & Muted Sage) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         {/* Soft champagne light field */}
-        <div className="atmosphere-field-1 absolute -top-[12%] left-[15%] w-[420px] sm:w-[620px] h-[420px] sm:h-[620px] rounded-full bg-[#D8C9A7]/24 dark:bg-[#D8C9A7]/16 blur-[90px]" />
+        <div className="atmosphere-field-1 absolute -top-[12%] left-[15%] w-[420px] sm:w-[620px] h-[420px] sm:h-[620px] rounded-full bg-[#D8C9A7]/14 dark:bg-[#D8C9A7]/09 blur-[100px]" />
         {/* Subtle sage light field */}
-        <div className="atmosphere-field-2 absolute top-[30%] -right-[10%] w-[380px] sm:w-[560px] h-[380px] sm:h-[560px] rounded-full bg-[#9EAA9B]/22 dark:bg-[#9EAA9B]/14 blur-[100px]" />
+        <div className="atmosphere-field-2 absolute top-[30%] -right-[10%] w-[380px] sm:w-[560px] h-[380px] sm:h-[560px] rounded-full bg-[#9EAA9B]/12 dark:bg-[#9EAA9B]/07 blur-[110px]" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = memo(({
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-16 sm:mb-20">
           <button
             onClick={onEnterApp}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#111311] text-[#F5F7F3] dark:bg-[#F5F7F3] dark:text-[#111311] hover:opacity-90 font-semibold text-base rounded-full shadow-lg transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#111311] text-[#F5F7F3] dark:bg-[#F5F7F3] dark:text-[#111311] hover:opacity-90 font-semibold text-base rounded-full shadow-lg btn-luxury-cta cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span>Launch App</span>
             <ArrowUpRight className="w-4 h-4" />
@@ -96,9 +96,9 @@ export const HeroSection: React.FC<HeroSectionProps> = memo(({
               href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1 transition-colors"
+              className="text-[11px] font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1 transition-colors"
             >
-              ClauseLab Explorer <ExternalLink className="w-3 h-3" />
+              Explorer <ExternalLink className="w-3 h-3" />
             </a>
           </div>
 

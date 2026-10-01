@@ -109,52 +109,52 @@ body {
 
 /* ==============================================================================
    Atmospheric Light Fields (Champagne, Sage & Cool Silver)
-   GPU-Accelerated translate3d Only
+   Calmer & Slower Ambient GPU-Accelerated Drift
    ============================================================================== */
 
 @keyframes driftAtmosphere1 {
   0%, 100% {
     transform: translate3d(0, 0, 0);
-    opacity: 0.65;
+    opacity: 0.28;
   }
   50% {
-    transform: translate3d(32px, -24px, 0);
-    opacity: 0.92;
+    transform: translate3d(28px, -20px, 0);
+    opacity: 0.44;
   }
 }
 
 @keyframes driftAtmosphere2 {
   0%, 100% {
     transform: translate3d(0, 0, 0);
-    opacity: 0.55;
+    opacity: 0.24;
   }
   50% {
-    transform: translate3d(-28px, 20px, 0);
-    opacity: 0.85;
+    transform: translate3d(-24px, 16px, 0);
+    opacity: 0.38;
   }
 }
 
 .atmosphere-field-1 {
-  animation: driftAtmosphere1 26s ease-in-out infinite;
+  animation: driftAtmosphere1 48s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
 .atmosphere-field-2 {
-  animation: driftAtmosphere2 34s ease-in-out infinite;
+  animation: driftAtmosphere2 60s ease-in-out infinite;
   will-change: transform, opacity;
 }
 
-/* Cinematic Subtle Light Sweep */
+/* Cinematic Subtle Light Sweep (Calm & Ambient) */
 @keyframes lightSweepMotion {
   0% {
     transform: translate3d(-120%, -120%, 0) rotate(25deg);
     opacity: 0;
   }
   12% {
-    opacity: 0.75;
+    opacity: 0.38;
   }
   48% {
-    opacity: 0.75;
+    opacity: 0.38;
   }
   62% {
     transform: translate3d(130%, 130%, 0) rotate(25deg);
@@ -181,14 +181,32 @@ body {
   background: linear-gradient(
     135deg,
     transparent 38%,
-    rgba(216, 201, 167, 0.12) 47%,
-    rgba(255, 255, 255, 0.22) 50%,
-    rgba(216, 201, 167, 0.12) 53%,
+    rgba(216, 201, 167, 0.08) 47%,
+    rgba(255, 255, 255, 0.16) 50%,
+    rgba(216, 201, 167, 0.08) 53%,
     transparent 62%
   );
-  animation: lightSweepMotion 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: lightSweepMotion 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Smooth Luxury Button Transition (280ms-300ms ease-in-out light on/off) */
+.btn-luxury-cta {
+  transition: background-color 280ms ease-in-out,
+              color 280ms ease-in-out,
+              box-shadow 300ms ease-in-out,
+              transform 250ms ease-in-out,
+              opacity 250ms ease-in-out,
+              border-color 280ms ease-in-out;
+}
+
+.btn-luxury-cta:hover {
+  box-shadow: 0 10px 25px -5px rgba(216, 201, 167, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.12);
+}
+
+.dark .btn-luxury-cta:hover {
+  box-shadow: 0 10px 28px -5px rgba(216, 201, 167, 0.20), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
 }
 
 /* Edge Fades */

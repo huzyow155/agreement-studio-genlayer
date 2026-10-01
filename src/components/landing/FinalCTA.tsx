@@ -14,8 +14,8 @@ export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
     <section className="relative py-28 sm:py-36 px-4 sm:px-6 overflow-hidden border-t border-[var(--border-subtle)]">
       {/* Ambient Atmospheric Light (Restrained Champagne & Sage) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="atmosphere-field-1 absolute -bottom-24 left-1/2 -translate-x-1/2 w-[580px] h-[300px] rounded-[100%] bg-[var(--accent-champagne)]/20 blur-[90px]" />
-        <div className="atmosphere-field-2 absolute -bottom-10 left-1/3 w-[360px] h-[220px] rounded-[100%] bg-[var(--accent-sage)]/18 blur-[80px]" />
+        <div className="atmosphere-field-1 absolute -bottom-24 left-1/2 -translate-x-1/2 w-[580px] h-[300px] rounded-[100%] bg-[var(--accent-champagne)]/12 blur-[100px]" />
+        <div className="atmosphere-field-2 absolute -bottom-10 left-1/3 w-[360px] h-[220px] rounded-[100%] bg-[var(--accent-sage)]/10 blur-[90px]" />
       </div>
 
       <div
@@ -44,7 +44,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-14">
           <button
             onClick={onEnterApp}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-9 py-4 bg-[#111311] text-white hover:bg-black dark:bg-[#F5F7F3] dark:text-[#080A09] dark:hover:bg-white font-medium text-base rounded-full shadow-lg transition-all duration-200 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-9 py-4 bg-[#111311] text-white hover:bg-black dark:bg-[#F5F7F3] dark:text-[#080A09] dark:hover:bg-white font-medium text-base rounded-full shadow-lg btn-luxury-cta cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span>Launch Studio App</span>
             <ArrowUpRight className="w-4 h-4" />
@@ -54,10 +54,10 @@ export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
             href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 luxury-glass text-[var(--text-primary)] hover:border-[var(--accent-champagne-border)] font-medium text-base rounded-full transition-all duration-200 cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 luxury-glass text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-champagne-border)] rounded-full transition-all duration-200 cursor-pointer"
           >
-            <span>Contract Explorer</span>
-            <ExternalLink className="w-4 h-4 text-[var(--text-muted)]" />
+            <span>Explorer</span>
+            <ExternalLink className="w-3.5 h-3.5 text-[var(--text-muted)]" />
           </a>
         </div>
 
