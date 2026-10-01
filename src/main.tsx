@@ -4,13 +4,16 @@ import './index.css'
 import { App } from './App'
 import { WalletProvider } from './context/WalletContext'
 import { TransactionProvider } from './context/TransactionContext'
+import { ThemeProvider } from './context/ThemeContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <WalletProvider>
-      <TransactionProvider>
-        <App />
-      </TransactionProvider>
-    </WalletProvider>
+    <ThemeProvider>
+      <WalletProvider>
+        <TransactionProvider>
+          <App />
+        </TransactionProvider>
+      </WalletProvider>
+    </ThemeProvider>
   </StrictMode>,
 )

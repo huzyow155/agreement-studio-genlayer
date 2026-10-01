@@ -1,60 +1,70 @@
 import React, { memo } from 'react'
 import { ArrowUpRight, HelpCircle, ExternalLink } from 'lucide-react'
 import { CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL } from '../../config/chain'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
 
 interface FinalCTAProps {
   onEnterApp: () => void
 }
 
 export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
+  const { ref, isVisible } = useScrollReveal()
+
   return (
-    <section className="relative py-28 sm:py-36 px-4 sm:px-6 overflow-hidden border-t border-white/[0.06]">
-      {/* Ambient Radial Lights */}
+    <section className="relative py-28 sm:py-36 px-4 sm:px-6 overflow-hidden border-t border-[var(--border-subtle)]">
+      {/* Ambient Atmospheric Light (Restrained Champagne & Sage) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="glow-ambient -bottom-20 left-1/2 -translate-x-1/2 w-[550px] h-[280px] bg-emerald-600/[0.06]" />
+        <div className="atmosphere-field-1 absolute -bottom-24 left-1/2 -translate-x-1/2 w-[580px] h-[300px] rounded-[100%] bg-[var(--accent-champagne)]/20 blur-[90px]" />
+        <div className="atmosphere-field-2 absolute -bottom-10 left-1/3 w-[360px] h-[220px] rounded-[100%] bg-[var(--accent-sage)]/18 blur-[80px]" />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center">
-        {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-xs font-mono tracking-widest text-emerald-400 uppercase mb-8">
+      <div
+        ref={ref}
+        className={`relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center reveal-init ${
+          isVisible ? 'reveal-visible' : ''
+        }`}
+      >
+        {/* Luxury Pill Eyebrow */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full luxury-pill text-xs font-mono tracking-widest text-[var(--text-secondary)] uppercase mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-champagne)] animate-pulse" />
           <span>Start Benchmarking</span>
         </div>
 
         {/* Editorial Headline */}
-        <h2 className="font-serif italic font-normal text-4xl sm:text-6xl md:text-7xl text-white tracking-tight leading-[1.08] mb-6 sm:mb-8 text-balance">
+        <h2 className="font-serif italic font-normal text-4xl sm:text-6xl md:text-7xl text-[var(--text-primary)] tracking-tight leading-[1.08] mb-6 sm:mb-8 text-balance">
           Ready to see where your agreement breaks?
         </h2>
 
         {/* Barlow Subtext */}
-        <p className="font-sans text-base sm:text-xl text-zinc-400 max-w-2xl leading-relaxed mb-10 sm:mb-12 font-normal">
+        <p className="font-sans text-base sm:text-xl text-[var(--text-secondary)] max-w-2xl leading-relaxed mb-10 sm:mb-12 font-normal">
           Draft natural-language clauses, test adversarial edge cases with live GenLayer validators, and inspect canary-calibrated rulings on Studionet.
         </p>
 
-        {/* Action Button */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-12">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-14">
           <button
             onClick={onEnterApp}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-9 py-4 bg-white text-zinc-950 hover:bg-zinc-100 font-semibold text-base rounded-full shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-9 py-4 bg-[#111311] text-white hover:bg-black dark:bg-[#F5F7F3] dark:text-[#080A09] dark:hover:bg-white font-medium text-base rounded-full shadow-lg transition-all duration-200 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span>Launch Studio App</span>
-            <ArrowUpRight className="w-4 h-4 text-zinc-950" />
+            <ArrowUpRight className="w-4 h-4" />
           </button>
 
           <a
             href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 liquid-glass-card text-zinc-300 hover:text-white font-medium text-base rounded-full transition-all cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 luxury-glass text-[var(--text-primary)] hover:border-[var(--accent-champagne-border)] font-medium text-base rounded-full transition-all duration-200 cursor-pointer"
           >
             <span>Contract Explorer</span>
-            <ExternalLink className="w-4 h-4 text-zinc-400" />
+            <ExternalLink className="w-4 h-4 text-[var(--text-muted)]" />
           </a>
         </div>
 
         {/* Studionet Gas & Funding Guidance Note */}
-        <div className="w-full max-w-xl bg-white/[0.02] border border-white/10 rounded-2xl p-4 sm:p-5 text-left text-xs text-zinc-400 space-y-1.5 backdrop-blur-md">
-          <div className="font-semibold text-zinc-200 flex items-center gap-1.5">
-            <HelpCircle className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="w-full max-w-xl luxury-card rounded-2xl p-4 sm:p-5 text-left text-xs text-[var(--text-secondary)] space-y-1.5">
+          <div className="font-semibold text-[var(--text-primary)] flex items-center gap-2">
+            <HelpCircle className="w-3.5 h-3.5 text-[var(--accent-champagne)]" />
             <span>Studionet Gas &amp; Testing Information</span>
           </div>
           <p className="leading-relaxed">
@@ -65,3 +75,4 @@ export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
     </section>
   )
 })
+

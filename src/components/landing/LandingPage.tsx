@@ -47,7 +47,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] selection:bg-emerald-500/30 selection:text-white flex flex-col justify-between overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] transition-colors duration-300 selection:bg-[var(--accent-champagne)]/30 selection:text-[var(--text-primary)] flex flex-col justify-between overflow-x-hidden font-sans">
       {/* Floating Glass Navigation */}
       <LandingNavbar onEnterApp={onEnterApp} />
 

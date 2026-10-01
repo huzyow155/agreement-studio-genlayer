@@ -1,88 +1,74 @@
 import React, { memo } from 'react'
-import { AlertTriangle, CheckCircle2, ShieldAlert, Cpu } from 'lucide-react'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
 
 export const ProductIntro: React.FC = memo(() => {
-  return (
-    <section id="story" className="relative py-24 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* Subtle Ambient Radial Highlight */}
-      <div className="glow-ambient -top-10 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-emerald-500/[0.04]" />
+  const { ref, isVisible } = useScrollReveal({ threshold: 0.15 })
 
-      <div className="relative z-10 text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-        <div className="text-xs font-mono uppercase tracking-widest text-emerald-400 mb-3">
+  return (
+    <section
+      id="story"
+      ref={ref}
+      className={`relative py-24 sm:py-32 px-4 sm:px-6 max-w-5xl mx-auto border-t border-[var(--border-subtle)] transition-all duration-700 ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+      }`}
+    >
+      <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+        <div className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] mb-3">
           The Problem with AI Adjudication
         </div>
-        <h2 className="font-serif italic font-normal text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-tight mb-6">
+        <h2 className="font-serif italic font-normal text-3xl sm:text-5xl md:text-6xl text-[var(--text-primary)] tracking-tight leading-tight mb-6">
           Single models guess. Consensus verifies.
         </h2>
-        <p className="text-zinc-400 text-base sm:text-lg leading-relaxed font-normal">
-          When counterparties sign vague contractual language, LLM-based arbiters frequently hallucinate decisive verdicts on ambiguous edge cases. Agreement Studio forces counterparties to benchmark and lock the text before signing.
+        <div className="w-16 h-px bg-[#D8C9A7] mx-auto mb-6" />
+        <p className="text-[var(--text-secondary)] text-base sm:text-lg leading-relaxed font-normal">
+          When counterparties sign natural-language agreements without adversarial testing, single-model LLM arbiters inevitably hallucinate decisive verdicts on ambiguous edge cases. Agreement Studio surfaces ambiguity before signing.
         </p>
       </div>
 
-      {/* Side-by-Side Comparison: Naive LLM Oracle vs GenLayer Agreement Studio */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-        {/* Left: Naive AI Adjudication */}
-        <div className="liquid-glass-card rounded-2xl p-6 sm:p-8 space-y-5 border-red-500/10 hover:border-red-500/20">
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
-              <AlertTriangle className="w-5 h-5" />
-            </div>
-            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
-              Conventional AI Oracle
+      {/* Editorial Minimal Contrast (Not a colorful dashboard) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
+        {/* Left: Single-Model Arbiters */}
+        <div className="luxury-card rounded-2xl p-7 sm:p-9 space-y-5">
+          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
+            <span className="text-xs font-mono uppercase tracking-wider text-[var(--text-muted)]">
+              Single-Model Arbiters
             </span>
+            <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
           </div>
 
-          <h3 className="text-xl sm:text-2xl font-serif text-white tracking-tight">
-            The Ambiguity &amp; Hallucination Trap
+          <h3 className="text-xl sm:text-2xl font-serif text-[var(--text-primary)]">
+            Forced Binary Guessing
           </h3>
 
-          <ul className="space-y-3.5 text-xs sm:text-sm text-zinc-400 leading-relaxed">
-            <li className="flex items-start gap-2.5">
-              <ShieldAlert className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <span><strong>Forced Decisions:</strong> Single LLMs always attempt to output a binary decision, even when contract clauses are fundamentally undecidable.</span>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <ShieldAlert className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <span><strong>Unmeasured Model Drift:</strong> Zero mechanism to verify if the underlying model weights or prompt interpretations drifted over time.</span>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <ShieldAlert className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <span><strong>Post-Dispute Surprises:</strong> Parties discover critical ambiguities only after thousands of dollars are at stake in performance.</span>
-            </li>
-          </ul>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+            Conventional AI oracles lack an abstention mechanism. When presented with ambiguous contract language, a standalone model is forced to choose an arbitrary outcome, introducing unmeasured model bias and unpredictable dispute results.
+          </p>
+
+          <div className="pt-2 text-xs font-mono text-[var(--text-muted)] border-t border-[var(--border-subtle)]">
+            Result: Hallucinated certainty on undecidable clauses
+          </div>
         </div>
 
-        {/* Right: Agreement Studio on GenLayer */}
-        <div className="liquid-glass-card rounded-2xl p-6 sm:p-8 space-y-5 border-emerald-500/20 hover:border-emerald-500/40 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/[0.08] blur-2xl rounded-full pointer-events-none" />
-
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <Cpu className="w-5 h-5" />
-            </div>
-            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              GenLayer Studionet Engine
+        {/* Right: Multi-Validator Consensus */}
+        <div className="luxury-card rounded-2xl p-7 sm:p-9 space-y-5 border-[var(--accent-champagne-border)]">
+          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
+            <span className="text-xs font-mono uppercase tracking-wider text-[#D8C9A7]">
+              GenLayer Multi-Validator Consensus
             </span>
+            <span className="w-2 h-2 rounded-full bg-[#D8C9A7]" />
           </div>
 
-          <h3 className="text-xl sm:text-2xl font-serif text-white tracking-tight">
-            Pre-Signing Ambiguity Benchmark
+          <h3 className="text-xl sm:text-2xl font-serif text-[var(--text-primary)]">
+            Calibrated Pre-Signing Consensus
           </h3>
 
-          <ul className="space-y-3.5 text-xs sm:text-sm text-zinc-300 leading-relaxed">
-            <li className="flex items-start gap-2.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span><strong>Multi-Validator Consensus:</strong> Independent validators test edge cases pre-signing; ambiguous text yields <code className="text-emerald-400 font-mono text-xs">UNDECIDABLE</code> until reworded.</span>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span><strong>In-Band Canary Calibration:</strong> Adjudication validates an in-band held-back scenario with known truth before evaluating actual disputed facts.</span>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span><strong>Principled Abstention:</strong> If consensus fails or the canary misses, the contract safely outputs <code className="text-emerald-400 font-mono text-xs">UNRELIABLE</code> instead of guessing.</span>
-            </li>
-          </ul>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+            Independent validators evaluate edge cases before signing under the Equivalence Principle. If validators disagree, the clause surfaces as UNDECIDABLE. At adjudication, an in-band canary verifies calibration before evaluating dispute facts.
+          </p>
+
+          <div className="pt-2 text-xs font-mono text-[var(--text-secondary)] border-t border-[var(--border-subtle)]">
+            Result: Principled abstention (<span className="text-[var(--text-primary)] font-semibold">UNRELIABLE</span>) when uncalibrated
+          </div>
         </div>
       </div>
     </section>
