@@ -23,7 +23,7 @@ import {
 } from './services/contractService'
 import type { SpecRecord, ScenarioRecord, SuiteReport, FactsRecord, RulingRecord } from './types/contract'
 import { DEFAULT_SPEC_ID, DEFAULT_FACTS_ID, CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL } from './config/chain'
-import { Loader2, RefreshCw, ExternalLink, ChevronDown, ChevronRight, HelpCircle, Shield, Layers } from 'lucide-react'
+import { Loader2, RefreshCw, ExternalLink, ChevronDown, ChevronRight, Shield, Layers } from 'lucide-react'
 
 // Downstream consumer contract address
 const CONSUMER_CONTRACT_ADDRESS = '0x9Fe97e71A0eeF88594abDea901B978519C98df34'
@@ -178,45 +178,19 @@ export const App: React.FC = () => {
 
       {/* Main Content Canvas */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
-        {/* Intro Section - Font upsized */}
-        <section className="space-y-3 text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#e7e5e0] rounded-full text-xs sm:text-sm font-mono text-[#52525b] shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span>GenLayer Intelligent Contract &bull; Studionet</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#18181b] leading-tight">
-            Surface contract ambiguity before signing.
-          </h1>
-
-          <p className="text-base sm:text-lg text-[#52525b] max-w-3xl leading-relaxed">
-            Agreement Studio tests natural-language agreements through adversarial counterparty scenarios,
-            validator consensus gates, and in-band canary calibration on the ClauseLab Intelligent Contract.
-          </p>
-        </section>
-
-        {/* Studionet Gas & Funding Guidance Box */}
-        <div className="bg-white border border-[#e7e5e0] rounded-2xl p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
-          <HelpCircle className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-          <div className="space-y-1 text-xs sm:text-sm">
-            <div className="font-semibold text-[#18181b] flex items-center gap-2">
-              <span>Studionet Gas & Transaction Funding</span>
-              <span className="text-[11px] font-mono font-normal px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
-                Zero GEN needed for reading
-              </span>
-            </div>
-            <p className="text-[#52525b] leading-relaxed">
-              Viewing existing specs, scenarios, and rulings is free and requires zero GEN. Submitting state changes (creating specs, signing, locking, or adjudicating) consumes nominal studionet gas. Accounts in GenLayer Studio come pre-funded with test tokens; if your external wallet shows 0 GEN or requests gas, check the{' '}
-              <a
-                href="https://studio.genlayer.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-[#18181b] underline underline-offset-2 hover:text-emerald-700"
-              >
-                GenLayer Studio
-              </a>{' '}
-              Accounts panel for sandbox test accounts and faucet options (the standalone public faucet targets Asimov/Bradbury, not studionet).
+        {/* Focused Workbench Workspace Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#18181b]">
+              Agreement Workbench
+            </h1>
+            <p className="text-sm text-[#71717a] mt-0.5">
+              Draft natural-language clauses, test adversarial edge cases, and inspect canary rulings.
             </p>
+          </div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#e7e5e0] rounded-full text-xs font-mono text-[#52525b] shadow-xs self-start sm:self-auto">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>Studionet &bull; Chain 61999</span>
           </div>
         </div>
 
@@ -406,14 +380,15 @@ export const App: React.FC = () => {
           <div className="flex items-center gap-5 text-xs sm:text-sm">
             <span>Studionet (61999)</span>
             <span>&bull;</span>
-            {/* The single primary explorer link */}
+            {/* Quiet compact explorer utility link */}
             <a
               href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#18181b] font-medium hover:underline flex items-center gap-1"
+              className="text-[#71717a] hover:text-[#18181b] flex items-center gap-1 transition-colors"
             >
-              Contract Explorer <ExternalLink className="w-3.5 h-3.5" />
+              <span>Explorer</span>
+              <ExternalLink className="w-3 h-3 text-[#a1a1aa]" />
             </a>
             <span>&bull;</span>
             <span>MIT License</span>

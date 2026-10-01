@@ -41,9 +41,9 @@ export const LandingFooter: React.FC<LandingFooterProps> = memo(({ onEnterApp })
             href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1.5"
+            className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 text-xs text-[var(--text-muted)]"
           >
-            <span>Contract Explorer</span>
+            <span>Explorer</span>
             <ExternalLink className="w-3 h-3 text-[var(--text-muted)]" />
           </a>
 

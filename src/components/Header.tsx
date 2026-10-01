@@ -1,7 +1,7 @@
 import React from 'react'
 import { useWallet } from '../context/WalletContext'
 import { CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL } from '../config/chain'
-import { ExternalLink, Wallet, AlertCircle, Copy, Check, ArrowLeft } from 'lucide-react'
+import { ExternalLink, Wallet, AlertCircle, ArrowLeft } from 'lucide-react'
 
 interface HeaderProps {
   onOpenHowItWorks: () => void
@@ -11,13 +11,6 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onOpenHowItWorks, onNavigateHome, isAppRoute }) => {
   const { walletState, account, openChooser, disconnectWallet, switchToStudionet } = useWallet()
-  const [copied, setCopied] = React.useState(false)
-
-  const copyAddress = () => {
-    navigator.clipboard.writeText(CONTRACT_ADDRESS)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   const shortAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
@@ -60,33 +53,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenHowItWorks, onNavigateHome
             >
               How it works
             </button>
-            {/* Exactly ONE prominent, always-visible explorer link */}
-            <a
-              href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#18181b] transition-colors flex items-center gap-1 cursor-pointer font-medium text-[#18181b]"
-            >
-              Contract Explorer
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
           </nav>
         </div>
 
-        {/* Right side: Contract pill & Wallet connection */}
+        {/* Right side: Quiet compact Explorer utility link & Wallet connection */}
         <div className="flex items-center gap-3">
-          {/* Contract address badge */}
-          <div className="hidden lg:flex items-center gap-1.5 text-xs sm:text-sm font-mono bg-white border border-[#e7e5e0] px-3 py-1.5 rounded-lg text-[#52525b] shadow-xs">
-            <span className="text-[#a1a1aa]">Contract:</span>
-            <span className="font-medium text-[#18181b]">{shortAddress(CONTRACT_ADDRESS)}</span>
-            <button
-              onClick={copyAddress}
-              className="text-[#71717a] hover:text-[#18181b] p-0.5 transition-colors cursor-pointer"
-              title="Copy Contract Address"
-            >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-            </button>
-          </div>
+          {/* Quiet Compact Explorer Utility Link */}
+          <a
+            href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono text-[#71717a] hover:text-[#18181b] bg-white border border-[#e7e5e0] px-2.5 py-1 rounded-md transition-colors shadow-2xs"
+            title={`ClauseLab Contract: ${CONTRACT_ADDRESS}`}
+          >
+            <span>Explorer</span>
+            <ExternalLink className="w-3 h-3 text-[#a1a1aa]" />
+          </a>
 
           {/* Wrong Chain Alert */}
           {walletState === 'WRONG_CHAIN' && (
