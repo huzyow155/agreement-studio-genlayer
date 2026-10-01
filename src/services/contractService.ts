@@ -263,3 +263,16 @@ export async function submitAdjudicate(
     args: [specId, factsId],
   })
 }
+
+// ---------------------------------------------------------------------------
+// DETERMINISTIC SPEC ID CALCULATION (matches ClauseLab.py _sha(author|title|clause)[:12])
+// ---------------------------------------------------------------------------
+import { sha256, toHex } from 'viem'
+
+export function computeDeterministicSpecId(author: string, title: string, clause: string): string {
+  const input = `${author}|${title}|${clause}`
+  const hash = sha256(toHex(input))
+  // slice(2, 14) gets first 12 hex chars after 0x prefix
+  return hash.slice(2, 14).toLowerCase()
+}
+

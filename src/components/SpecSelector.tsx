@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useWallet } from '../context/WalletContext'
 import { useTransaction } from '../context/TransactionContext'
-import { submitCreateSpec, getWriteClient, fetchSpec } from '../services/contractService'
+import { submitCreateSpec, getWriteClient, fetchSpec, computeDeterministicSpecId } from '../services/contractService'
 import { DEFAULT_SPEC_ID } from '../config/chain'
 import { Search, Plus, X, Sparkles, BookOpen } from 'lucide-react'
 
@@ -68,12 +68,45 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
     e.preventDefault()
     if (!account || !selectedWallet || !title.trim() || !clause.trim()) return
 
+    const trimmedTitle = title.trim()
+    const trimmedClause = clause.trim()
+    const trimmedLabels = labelsCsv.trim()
+
+    // 1. Compute deterministic spec_id on-chain formula: _sha(author|title|clause)[:12]
+    const deterministicId = computeDeterministicSpecId(account, trimmedTitle, trimmedClause)
+
+    // 2. Pre-check if spec already exists on-chain for this author/text
+    try {
+      const existingSpec = await fetchSpec(deterministicId)
+      if (existingSpec && existingSpec.spec_id) {
+        // Spec already exists! Automatically select and load it instead of crashing.
+        onSelectSpecId(existingSpec.spec_id)
+        setShowCreateModal(false)
+        setTitle('')
+        setClause('')
+        return
+      }
+    } catch (err) {
+      console.warn('Pre-check for existing spec encountered an error:', err)
+    }
+
     const client = getWriteClient(account, selectedWallet.provider)
 
     await executeTransaction(
       'Create Agreement Spec',
-      () => submitCreateSpec(client, title.trim(), clause.trim(), labelsCsv.trim()),
+      () => submitCreateSpec(client, trimmedTitle, trimmedClause, trimmedLabels),
       async () => {
+        // First check the expected deterministic ID directly
+        const loadedDirect = await fetchSpec(deterministicId)
+        if (loadedDirect && loadedDirect.spec_id) {
+          onSelectSpecId(loadedDirect.spec_id)
+          setShowCreateModal(false)
+          setTitle('')
+          setClause('')
+          return true
+        }
+
+        // Fallback to get_latest_spec
         const rawLatest = await client.readContract({
           address: '0xf227D68595178A2192888c85E3550fEff4b79406',
           functionName: 'get_latest_spec',
@@ -101,6 +134,17 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[#71717a] font-medium">Agreement Case:</span>
         <button
+          onClick={() => onSelectSpecId('b1e0205a4909')}
+          className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
+            currentSpecId === 'b1e0205a4909'
+              ? 'bg-[#18181b] text-white shadow-xs'
+              : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
+          }`}
+        >
+          b1e0205a4909 (Dual-Wallet Locked)
+        </button>
+
+        <button
           onClick={() => onSelectSpecId('0b60bff5d312')}
           className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
             currentSpecId === '0b60bff5d312'
@@ -108,7 +152,7 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
               : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
           }`}
         >
-          0b60bff5d312 (Fresh Live Run)
+          0b60bff5d312 (Walkthrough Case)
         </button>
 
         <button
@@ -122,7 +166,7 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
           {DEFAULT_SPEC_ID} (Baseline Demo)
         </button>
 
-        {currentSpecId !== DEFAULT_SPEC_ID && currentSpecId !== '0b60bff5d312' && (
+        {currentSpecId !== DEFAULT_SPEC_ID && currentSpecId !== '0b60bff5d312' && currentSpecId !== 'b1e0205a4909' && (
           <span className="px-3 py-1.5 bg-[#18181b] text-white rounded-lg font-mono font-medium shadow-xs">
             {currentSpecId} (Active)
           </span>
