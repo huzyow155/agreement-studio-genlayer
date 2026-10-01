@@ -10,7 +10,30 @@ import {
   fetchSuiteReport,
   fetchSpec
 } from '../services/contractService'
-import { Play, Plus, AlertCircle, CheckCircle2, Clock, ShieldAlert } from 'lucide-react'
+import { Play, Plus, AlertCircle, CheckCircle2, Clock, ShieldAlert, Info, Sparkles } from 'lucide-react'
+
+const SCENARIO_TEMPLATES = [
+  {
+    title: 'On-time Delivery',
+    text: 'Contractor delivers the complete repository with pure ASCII code and all passing tests on day 2.',
+    expected: 'DELIVERED',
+  },
+  {
+    title: 'Passing CI Submission',
+    text: 'Contractor submits pull request containing complete repository with passing tests on day 5, verified by test suite.',
+    expected: 'DELIVERED',
+  },
+  {
+    title: 'Ghosting / No Delivery',
+    text: 'Contractor disappears for 3 weeks and delivers nothing.',
+    expected: 'BREACH',
+  },
+  {
+    title: 'Late Missing Files',
+    text: 'Contractor sends an email saying done with no files attached 10 days later, exceeding deadline.',
+    expected: 'BREACH',
+  },
+]
 
 interface ScenariosTableProps {
   spec: SpecRecord
@@ -40,6 +63,17 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
 
   const isLocked = spec.status === 'LOCKED'
   const isParty = account && spec.parties.some((p) => p.toLowerCase() === account.toLowerCase())
+
+  const handleApplyTemplate = (tpl: typeof SCENARIO_TEMPLATES[0]) => {
+    setIsAdding(true)
+    setNewText(tpl.text)
+    const match = spec.labels.find((l) => l.toUpperCase() === tpl.expected.toUpperCase())
+    if (match) {
+      setNewExpected(match)
+    } else if (spec.labels.length > 0) {
+      setNewExpected(spec.labels[0])
+    }
+  }
 
   const handleAddScenario = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -116,10 +150,59 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
         )}
       </div>
 
+      {/* 1-Click Scenario Templates */}
+      {!isLocked && isParty && (
+        <div className="p-3.5 sm:p-4 bg-[#faf9f5] border border-[#e7e5e0] rounded-xl space-y-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <div className="text-xs font-semibold text-[#18181b] flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#a89260]" />
+              <span>One-Click Scenario Templates</span>
+            </div>
+            <span className="text-[11px] text-[#71717a]">
+              Pre-fill known edge cases to reach 4 green consensus scenarios quickly
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2 pt-0.5">
+            {SCENARIO_TEMPLATES.map((tpl) => (
+              <button
+                key={tpl.title}
+                type="button"
+                onClick={() => handleApplyTemplate(tpl)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#e7e5e0] hover:border-[#18181b] rounded-lg text-xs text-[#18181b] font-medium transition-colors shadow-2xs cursor-pointer group"
+              >
+                <span>{tpl.title}</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#f4f4f5] text-[#52525b] border border-[#e4e4e7] group-hover:bg-[#18181b] group-hover:text-white transition-colors">
+                  {tpl.expected}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Add Scenario Form */}
       {isAdding && (
         <form onSubmit={handleAddScenario} className="p-4 sm:p-5 bg-[#faf9f5] border border-[#e7e5e0] rounded-xl space-y-3.5">
-          <h4 className="text-sm font-semibold text-[#18181b]">Propose Edge Case Scenario</h4>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h4 className="text-sm font-semibold text-[#18181b]">Propose Edge Case Scenario</h4>
+            <div className="flex items-center gap-1.5 flex-wrap text-xs text-[#71717a]">
+              <span className="font-medium text-[#52525b] flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-[#a89260]" />
+                Template:
+              </span>
+              {SCENARIO_TEMPLATES.map((tpl) => (
+                <button
+                  key={tpl.title}
+                  type="button"
+                  onClick={() => handleApplyTemplate(tpl)}
+                  className="px-2 py-0.5 rounded bg-white border border-[#e7e5e0] hover:border-[#18181b] text-[11px] text-[#18181b] font-medium transition-colors cursor-pointer"
+                >
+                  {tpl.title}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div>
             <label className="text-xs font-medium text-[#71717a] block mb-1.5">
               Hypothetical Situation (Max 600 chars)
@@ -261,6 +344,24 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
                     </button>
                   )}
                 </div>
+
+                {/* Educational Guided Path for Red / UNDECIDABLE */}
+                {isRed && (
+                  <div className="mt-3 p-3.5 bg-amber-50/80 border border-amber-200/80 rounded-lg flex items-start gap-2.5 text-xs text-amber-950">
+                    <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <div className="font-semibold text-amber-900 flex items-center gap-1.5">
+                        <span>{isUndecidable ? 'Clause Ambiguity Detected' : 'Consensus Discrepancy'}</span>
+                        <span className="font-normal text-[11px] text-amber-700">(Guided Next Step)</span>
+                      </div>
+                      <p className="text-amber-900/90 leading-relaxed font-sans">
+                        {isUndecidable
+                          ? 'This is expected when a clause is ambiguous or lacks clear objective criteria. Use "Amend Clause" above to clarify wording, then re-run your scenarios.'
+                          : 'Validator consensus differed from the expected outcome. Review the clause wording or expected outcome, amend the clause if needed, and re-run consensus.'}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             )
           })
