@@ -1,8 +1,20 @@
 @import "tailwindcss";
 
-:root {
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+@theme {
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Barlow', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+:root {
+  --font-sans: 'Barlow', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+html {
+  font-size: 17px; /* Section 4: Font upsize across entire product */
+  scroll-behavior: smooth;
 }
 
 body {
@@ -29,4 +41,134 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1aa;
+}
+
+/* ==============================================================================
+   Cinematic Landing Background: Slow-Drifting Gradient Mesh & 200px Edge Fades
+   ============================================================================== */
+
+@keyframes driftBlob1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(60px, -40px, 0) scale(1.18);
+    opacity: 0.55;
+  }
+}
+
+@keyframes driftBlob2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1.05);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate3d(-50px, 35px, 0) scale(1.12);
+    opacity: 0.5;
+  }
+}
+
+@keyframes driftBlob3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(0.95);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate3d(40px, 50px, 0) scale(1.08);
+    opacity: 0.45;
+  }
+}
+
+.mesh-blob-1 {
+  animation: driftBlob1 22s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.mesh-blob-2 {
+  animation: driftBlob2 28s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.mesh-blob-3 {
+  animation: driftBlob3 34s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Strict Accessibility: Degrade to static background if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mesh-blob-1,
+  .mesh-blob-2,
+  .mesh-blob-3 {
+    animation: none !important;
+    transform: none !important;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 200px Top and Bottom Black Fades */
+.edge-fade-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, #09090b 0%, rgba(9, 9, 11, 0) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.edge-fade-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to top, #09090b 0%, rgba(9, 9, 11, 0) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ==============================================================================
+   Liquid Glass & Gradient Border Styles (Dark & Light)
+   ============================================================================== */
+
+.liquid-glass-strong {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-glass-strong:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.gradient-border-glass {
+  position: relative;
+  background: rgba(18, 18, 22, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.gradient-border-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0.14) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
