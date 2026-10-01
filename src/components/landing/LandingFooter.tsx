@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { ExternalLink } from 'lucide-react'
 import { CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL } from '../../config/chain'
 
@@ -6,7 +6,7 @@ interface LandingFooterProps {
   onEnterApp: () => void
 }
 
-export const LandingFooter: React.FC<LandingFooterProps> = ({ onEnterApp }) => {
+export const LandingFooter: React.FC<LandingFooterProps> = memo(({ onEnterApp }) => {
   return (
     <footer className="relative border-t border-white/[0.08] bg-[#09090b] py-12 sm:py-16 text-xs sm:text-sm text-zinc-400">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
@@ -75,4 +75,4 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({ onEnterApp }) => {
       </div>
     </footer>
   )
-}
+})

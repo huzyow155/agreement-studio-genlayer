@@ -45,11 +45,19 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  const navigate = (path: string) => {
+  const navigate = useCallback((path: string) => {
     window.history.pushState(null, '', path)
     setCurrentRoute(path.startsWith('/app') ? '/app' : '/')
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  }, [])
+
+  const handleEnterApp = useCallback(() => {
+    navigate('/app')
+  }, [navigate])
+
+  const handleNavigateHome = useCallback(() => {
+    navigate('/')
+  }, [navigate])
 
   // App / Spec State
   const [currentSpecId, setCurrentSpecId] = useState<string>(DEFAULT_SPEC_ID)
@@ -145,7 +153,7 @@ export const App: React.FC = () => {
   if (currentRoute !== '/app') {
     return (
       <>
-        <LandingPage onEnterApp={() => navigate('/app')} />
+        <LandingPage onEnterApp={handleEnterApp} />
         <WalletModal />
         <TransactionOverlay />
         <HowItWorks
@@ -164,7 +172,7 @@ export const App: React.FC = () => {
       {/* Top Header */}
       <Header
         onOpenHowItWorks={() => setShowHowItWorks(true)}
-        onNavigateHome={() => navigate('/')}
+        onNavigateHome={handleNavigateHome}
         isAppRoute={true}
       />
 

@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Users2, ShieldCheck, Scale, Binary } from 'lucide-react'
 
-export const FeaturesSection: React.FC = () => {
+export const FeaturesSection: React.FC = memo(() => {
   const features = [
     {
       icon: Users2,
@@ -81,4 +81,4 @@ export const FeaturesSection: React.FC = () => {
       </div>
     </section>
   )
-}
+})

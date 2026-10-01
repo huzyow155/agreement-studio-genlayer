@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { ArrowUpRight, CheckCircle2, Lock, Terminal } from 'lucide-react'
 import { CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL, DEFAULT_SPEC_ID } from '../../config/chain'
 import type { SpecRecord, RulingRecord } from '../../types/contract'
@@ -9,7 +9,7 @@ interface DappPreviewSectionProps {
   liveRuling: RulingRecord | null
 }
 
-export const DappPreviewSection: React.FC<DappPreviewSectionProps> = ({
+export const DappPreviewSection: React.FC<DappPreviewSectionProps> = memo(({
   onEnterApp,
   liveSpec,
   liveRuling,
@@ -17,7 +17,7 @@ export const DappPreviewSection: React.FC<DappPreviewSectionProps> = ({
   return (
     <section id="preview" className="relative py-24 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto border-t border-white/[0.06]">
       {/* Background Soft Glow */}
-      <div className="glow-ambient top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-emerald-600/[0.05]" />
+      <div className="glow-ambient top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[300px] bg-emerald-600/[0.04]" />
 
       <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20 relative z-10">
         <div className="text-xs font-mono uppercase tracking-widest text-emerald-400 mb-3">
@@ -170,4 +170,4 @@ export const DappPreviewSection: React.FC<DappPreviewSectionProps> = ({
       </div>
     </section>
   )
-}
+})

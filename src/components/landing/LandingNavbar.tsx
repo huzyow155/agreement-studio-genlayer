@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, memo } from 'react'
 import { ArrowUpRight, Menu, X, ExternalLink } from 'lucide-react'
 
 interface LandingNavbarProps {
   onEnterApp: () => void
 }
 
-export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onEnterApp }) => {
+export const LandingNavbar: React.FC<LandingNavbarProps> = memo(({ onEnterApp }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navLinks = [
@@ -141,4 +141,4 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onEnterApp }) => {
       )}
     </header>
   )
-}
+})

@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { AlertTriangle, CheckCircle2, ShieldAlert, Cpu } from 'lucide-react'
 
-export const ProductIntro: React.FC = () => {
+export const ProductIntro: React.FC = memo(() => {
   return (
     <section id="story" className="relative py-24 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
       {/* Subtle Ambient Radial Highlight */}
@@ -87,4 +87,4 @@ export const ProductIntro: React.FC = () => {
       </div>
     </section>
   )
-}
+})

@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { FileEdit, CheckCircle2, ShieldCheck, Scale, ArrowRight } from 'lucide-react'
 
 interface HowItWorksSectionProps {
   onEnterApp: () => void
 }
 
-export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onEnterApp }) => {
+export const HowItWorksSection: React.FC<HowItWorksSectionProps> = memo(({ onEnterApp }) => {
   const steps = [
     {
       num: '01',
@@ -106,4 +106,4 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ onEnterApp
       </div>
     </section>
   )
-}
+})

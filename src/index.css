@@ -44,67 +44,59 @@ body {
 }
 
 /* ==============================================================================
-   Cinematic Landing Background: Slow-Drifting Gradient Mesh & 200px Edge Fades
+   Cinematic Landing Background: GPU-Optimized translate3d Drifting Blobs
    ============================================================================== */
 
 @keyframes driftBlob1 {
   0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.35;
+    transform: translate3d(0, 0, 0);
+    opacity: 0.22;
   }
   50% {
-    transform: translate3d(60px, -40px, 0) scale(1.18);
-    opacity: 0.55;
+    transform: translate3d(35px, -25px, 0);
+    opacity: 0.35;
   }
 }
 
 @keyframes driftBlob2 {
   0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1.05);
+    transform: translate3d(0, 0, 0);
+    opacity: 0.18;
+  }
+  50% {
+    transform: translate3d(-30px, 20px, 0);
     opacity: 0.3;
-  }
-  50% {
-    transform: translate3d(-50px, 35px, 0) scale(1.12);
-    opacity: 0.5;
-  }
-}
-
-@keyframes driftBlob3 {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(0.95);
-    opacity: 0.25;
-  }
-  50% {
-    transform: translate3d(40px, 50px, 0) scale(1.08);
-    opacity: 0.45;
   }
 }
 
 .mesh-blob-1 {
-  animation: driftBlob1 22s ease-in-out infinite;
-  will-change: transform, opacity;
+  animation: driftBlob1 28s ease-in-out infinite;
+  will-change: transform;
 }
 
 .mesh-blob-2 {
-  animation: driftBlob2 28s ease-in-out infinite;
-  will-change: transform, opacity;
-}
-
-.mesh-blob-3 {
-  animation: driftBlob3 34s ease-in-out infinite;
-  will-change: transform, opacity;
+  animation: driftBlob2 36s ease-in-out infinite;
+  will-change: transform;
 }
 
 /* Strict Accessibility: Degrade to static background if user prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .mesh-blob-1,
-  .mesh-blob-2,
-  .mesh-blob-3 {
+  .mesh-blob-2 {
     animation: none !important;
     transform: none !important;
   }
   html {
     scroll-behavior: auto !important;
+  }
+}
+
+/* Mobile Performance: Disable background animations on small screens */
+@media (max-width: 768px) {
+  .mesh-blob-1,
+  .mesh-blob-2 {
+    animation: none !important;
+    transform: none !important;
   }
 }
 
@@ -132,32 +124,31 @@ body {
 }
 
 /* ==============================================================================
-   Liquid Glass & Gradient Border Styles (Dark & Light)
+   Liquid Glass & Gradient Border Styles (Optimized Compositing)
    ============================================================================== */
 
 .liquid-glass-strong {
   position: relative;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
 
 .liquid-glass-strong:hover {
-  background: rgba(255, 255, 255, 0.11);
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.24);
   transform: translateY(-1px);
 }
 
 .gradient-border-glass {
   position: relative;
-  background: rgba(18, 18, 22, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  background: rgba(18, 18, 22, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
 .gradient-border-glass::before {
@@ -166,7 +157,7 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0.14) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(255, 255, 255, 0.12) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -176,32 +167,44 @@ body {
 .liquid-glass-card {
   position: relative;
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
 
 .liquid-glass-card:hover {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
 
 .liquid-glass-pill {
   background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
 }
 
 .glow-ambient {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(120px);
+  filter: blur(90px);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Mobile Performance Overrides: Disable heavy backdrop filters and shadows on touch devices */
+@media (max-width: 768px) {
+  .liquid-glass-card,
+  .liquid-glass-pill,
+  .gradient-border-glass,
+  .liquid-glass-strong {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(18, 18, 22, 0.94) !important;
+    box-shadow: none !important;
+  }
 }

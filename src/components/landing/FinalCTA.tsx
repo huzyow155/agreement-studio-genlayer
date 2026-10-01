@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { ArrowUpRight, HelpCircle, ExternalLink } from 'lucide-react'
 import { CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL } from '../../config/chain'
 
@@ -6,12 +6,12 @@ interface FinalCTAProps {
   onEnterApp: () => void
 }
 
-export const FinalCTA: React.FC<FinalCTAProps> = ({ onEnterApp }) => {
+export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
   return (
     <section className="relative py-28 sm:py-36 px-4 sm:px-6 overflow-hidden border-t border-white/[0.06]">
       {/* Ambient Radial Lights */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="glow-ambient -bottom-20 left-1/2 -translate-x-1/2 w-[650px] h-[350px] bg-emerald-600/[0.08]" />
+        <div className="glow-ambient -bottom-20 left-1/2 -translate-x-1/2 w-[550px] h-[280px] bg-emerald-600/[0.06]" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center">
@@ -64,4 +64,4 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onEnterApp }) => {
       </div>
     </section>
   )
-}
+})

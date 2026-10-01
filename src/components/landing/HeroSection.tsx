@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { ArrowUpRight, ArrowDown, ExternalLink, CheckCircle2 } from 'lucide-react'
 import { CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL, DEFAULT_SPEC_ID } from '../../config/chain'
 import type { SpecRecord, RulingRecord } from '../../types/contract'
@@ -10,7 +10,7 @@ interface HeroSectionProps {
   loadingTeaser: boolean
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({
+export const HeroSection: React.FC<HeroSectionProps> = memo(({
   onEnterApp,
   liveSpec,
   liveRuling,
@@ -33,11 +33,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="edge-fade-top" aria-hidden="true" />
       <div className="edge-fade-bottom" aria-hidden="true" />
 
-      {/* Pure CSS Atmospheric Drifting Mesh Background */}
+      {/* Pure CSS Atmospheric Drifting Mesh Background (2 GPU-accelerated blobs) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="mesh-blob-1 absolute -top-[10%] left-[12%] w-[480px] sm:w-[700px] h-[480px] sm:h-[700px] rounded-full bg-emerald-600/20 blur-[110px]" />
-        <div className="mesh-blob-2 absolute top-[28%] -right-[8%] w-[420px] sm:w-[640px] h-[420px] sm:h-[640px] rounded-full bg-indigo-700/20 blur-[120px]" />
-        <div className="mesh-blob-3 absolute -bottom-[15%] left-[20%] w-[450px] sm:w-[620px] h-[450px] sm:h-[620px] rounded-full bg-teal-800/18 blur-[110px]" />
+        <div className="mesh-blob-1 absolute -top-[10%] left-[12%] w-[420px] sm:w-[600px] h-[420px] sm:h-[600px] rounded-full bg-emerald-600/18 blur-[70px]" />
+        <div className="mesh-blob-2 absolute top-[28%] -right-[8%] w-[380px] sm:w-[540px] h-[380px] sm:h-[540px] rounded-full bg-indigo-700/18 blur-[80px]" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
@@ -138,4 +137,4 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </div>
     </section>
   )
-}
+})
