@@ -3,7 +3,7 @@ import { useWallet } from '../context/WalletContext'
 import { X, Wallet as WalletIcon, ExternalLink } from 'lucide-react'
 
 export const WalletModal: React.FC = () => {
-  const { walletState, discoveredWallets, closeChooser, connectWallet, errorMessage } = useWallet()
+  const { walletState, discoveredWallets, selectedWallet, closeChooser, connectWallet, errorMessage } = useWallet()
 
   // Handle ESC key
   useEffect(() => {
@@ -34,10 +34,10 @@ export const WalletModal: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 id="wallet-modal-title" className="text-base font-semibold text-[#18181b]">
-              Connect Wallet
+              Connect / Switch Wallet
             </h3>
             <p className="text-xs text-[#71717a] mt-0.5">
-              Select an installed Web3 wallet to interact with ClauseLab.
+              Select an installed Web3 wallet extension to interact with ClauseLab.
             </p>
           </div>
           <button
@@ -59,35 +59,53 @@ export const WalletModal: React.FC = () => {
         {/* Discovered Supported Wallets List */}
         <div className="space-y-2">
           {discoveredWallets.length > 0 ? (
-            discoveredWallets.map((wallet) => (
-              <button
-                key={wallet.info.uuid || wallet.info.rdns}
-                onClick={() => {
-                  connectWallet(wallet)
-                }}
-                className="w-full flex items-center justify-between p-3.5 border border-[#e7e5e0] rounded-lg hover:border-[#a1a1aa] hover:bg-[#faf9f5] transition-all group text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  {wallet.info.icon ? (
-                    <img
-                      src={wallet.info.icon}
-                      alt={wallet.info.name}
-                      className="w-7 h-7 rounded-md object-contain shrink-0"
-                    />
-                  ) : (
-                    <div className="w-7 h-7 rounded-md bg-[#f4f4f5] flex items-center justify-center text-[#71717a]">
-                      <WalletIcon className="w-4 h-4" />
+            discoveredWallets.map((wallet) => {
+              const isCurrent =
+                selectedWallet &&
+                (selectedWallet.info.uuid === wallet.info.uuid || selectedWallet.info.rdns === wallet.info.rdns)
+
+              return (
+                <button
+                  key={wallet.info.uuid || wallet.info.rdns}
+                  onClick={async () => {
+                    await connectWallet(wallet)
+                    closeChooser()
+                  }}
+                  className={`w-full flex items-center justify-between p-3.5 border rounded-lg transition-all group text-left cursor-pointer ${
+                    isCurrent
+                      ? 'border-[#18181b] bg-[#faf9f5] ring-1 ring-[#18181b]'
+                      : 'border-[#e7e5e0] hover:border-[#a1a1aa] hover:bg-[#faf9f5]'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    {wallet.info.icon ? (
+                      <img
+                        src={wallet.info.icon}
+                        alt={wallet.info.name}
+                        className="w-7 h-7 rounded-md object-contain shrink-0"
+                      />
+                    ) : (
+                      <div className="w-7 h-7 rounded-md bg-[#f4f4f5] flex items-center justify-center text-[#71717a]">
+                        <WalletIcon className="w-4 h-4" />
+                      </div>
+                    )}
+                    <div>
+                      <div className="text-sm font-medium text-[#18181b] group-hover:text-black flex items-center gap-2">
+                        <span>{wallet.info.name}</span>
+                        {isCurrent && (
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-semibold">
+                            Active
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  )}
-                  <span className="text-sm font-medium text-[#18181b] group-hover:text-black">
-                    {wallet.info.name}
+                  </div>
+                  <span className="text-xs text-[#71717a] group-hover:text-[#18181b] font-medium">
+                    {isCurrent ? 'Reconnect' : 'Connect'} &rarr;
                   </span>
-                </div>
-                <span className="text-xs text-[#71717a] group-hover:text-[#18181b] font-medium">
-                  Connect &rarr;
-                </span>
-              </button>
-            ))
+                </button>
+              )
+            })
           ) : (
             /* Clean empty state when no supported wallet is detected */
             <div className="py-8 text-center border border-dashed border-[#e7e5e0] rounded-xl bg-[#faf9f5]/50 px-4">

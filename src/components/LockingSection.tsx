@@ -16,7 +16,7 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
   suiteReport,
   onSpecUpdated,
 }) => {
-  const { account, selectedWallet, requestAccountSwitch } = useWallet()
+  const { account, selectedWallet, requestAccountSwitch, openChooser } = useWallet()
   const { executeTransaction, isBusy } = useTransaction()
 
   const isLocked = spec.status === 'LOCKED'
@@ -114,15 +114,15 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
     if (rawProblem.includes('party has proposed no scenario')) {
       const addr = rawProblem.split(': ')[1] || ''
       return {
-        title: 'Counterparty Participation',
-        description: `Both counterparties must propose at least one scenario. Missing contribution from ${short(addr)}.`,
+        title: 'Counterparty Proposal Required (Contract Rule)',
+        description: `Each registered party must propose at least one scenario before locking can succeed. Missing contribution from ${short(addr)}. Switch wallet to ${short(addr)} and submit an edge-case scenario.`,
       }
     }
     if (rawProblem.includes('party has not signed')) {
       const addr = rawProblem.split(': ')[1] || ''
       return {
         title: 'Pending Dual Signature',
-        description: `Both counterparties must sign clause v${spec.version}. Waiting for signature from ${short(addr)}.`,
+        description: `Both counterparties must sign clause v${spec.version}. Waiting for signature from ${short(addr)}. Switch wallet to ${short(addr)} to sign.`,
       }
     }
     if (rawProblem.includes('not run at current version')) {
@@ -149,12 +149,14 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
     }
   }
 
+  const walletName = selectedWallet?.info?.name || 'Wallet'
+
   return (
     <div className="bg-white border border-[#e7e5e0] rounded-xl p-5 sm:p-6 shadow-xs space-y-5">
       <div>
         <h3 className="text-base font-bold text-[#18181b]">Dual Signatures & Spec Locking</h3>
         <p className="text-xs text-[#71717a] mt-0.5">
-          All counterparties must sign version {spec.version}. Locking is only permitted once every adversarial scenario evaluates to green.
+          All counterparties must sign version {spec.version}. Locking is only permitted once every adversarial scenario evaluates to green and each party has proposed at least one scenario.
         </p>
       </div>
 
@@ -165,16 +167,25 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
             <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
             <span>
               Clause v{spec.version} still requires signature from{' '}
-              <strong>Party B ({short(pendingParties[0])})</strong>. Switch MetaMask to Party B's account to sign.
+              <strong>Party B ({short(pendingParties[0])})</strong>. Switch {walletName} account or switch to counterparty wallet extension to sign.
             </span>
           </div>
-          <button
-            type="button"
-            onClick={requestAccountSwitch}
-            className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-medium rounded-lg border border-amber-300 transition-colors shrink-0 cursor-pointer text-xs self-start sm:self-auto"
-          >
-            Switch Account in MetaMask
-          </button>
+          <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={requestAccountSwitch}
+              className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-medium rounded-lg border border-amber-300 transition-colors cursor-pointer text-xs"
+            >
+              Switch Account in {walletName}
+            </button>
+            <button
+              type="button"
+              onClick={openChooser}
+              className="px-3 py-1.5 bg-white hover:bg-amber-50 text-amber-900 font-medium rounded-lg border border-amber-300 transition-colors cursor-pointer text-xs"
+            >
+              Switch Wallet Extension
+            </button>
+          </div>
         </div>
       )}
 
@@ -183,17 +194,26 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-blue-700 shrink-0" />
             <span>
-              Connected as {short(account)}. To sign, switch MetaMask to registered party{' '}
+              Connected as {short(account)}. To sign or lock, switch {walletName} to registered party{' '}
               <strong>{short(pendingParties[0])}</strong>.
             </span>
           </div>
-          <button
-            type="button"
-            onClick={requestAccountSwitch}
-            className="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-900 font-medium rounded-lg border border-blue-300 transition-colors shrink-0 cursor-pointer text-xs self-start sm:self-auto"
-          >
-            Switch Account in MetaMask
-          </button>
+          <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={requestAccountSwitch}
+              className="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-900 font-medium rounded-lg border border-blue-300 transition-colors cursor-pointer text-xs"
+            >
+              Switch Account in {walletName}
+            </button>
+            <button
+              type="button"
+              onClick={openChooser}
+              className="px-3 py-1.5 bg-white hover:bg-blue-50 text-blue-900 font-medium rounded-lg border border-blue-300 transition-colors cursor-pointer text-xs"
+            >
+              Switch Wallet Extension
+            </button>
+          </div>
         </div>
       )}
 

@@ -91,6 +91,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenHowItWorks, onNavigateHome
                 </span>
               </div>
               <button
+                onClick={openChooser}
+                className="text-xs sm:text-sm font-medium text-[#71717a] hover:text-[#18181b] border border-[#e7e5e0] bg-white px-2.5 py-1.5 rounded-md hover:bg-[#f4f4f5] transition-colors cursor-pointer"
+                title="Switch active wallet extension or account"
+              >
+                Switch Wallet
+              </button>
+              <button
                 onClick={disconnectWallet}
                 className="text-xs sm:text-sm font-medium text-[#71717a] hover:text-[#18181b] border border-[#e7e5e0] bg-white px-2.5 py-1.5 rounded-md hover:bg-[#f4f4f5] transition-colors cursor-pointer"
               >

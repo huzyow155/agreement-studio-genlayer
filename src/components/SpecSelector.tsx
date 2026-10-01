@@ -236,7 +236,7 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
                   <span>Ready-Made Demo Specification</span>
                 </div>
                 <p className="text-amber-900/90 leading-relaxed font-sans">
-                  This Software Delivery agreement has verified unambiguous phrasing. Once created on Studionet, click each of the 4 One-Click Scenario Templates to quickly reach 4 green consensus results and unlock locking and adjudication.
+                  This Software Delivery agreement has verified unambiguous phrasing. Once created on Studionet, invite Party B, and ensure <strong>both Party A and Party B</strong> each propose scenarios from their respective wallets (or use the 4 One-Click Scenario Templates across both wallets) so the on-chain lock rule is satisfied!
                 </p>
                 <div className="pt-1">
                   <button

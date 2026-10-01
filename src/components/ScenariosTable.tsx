@@ -150,13 +150,53 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
         )}
       </div>
 
+      {/* Counterparty Proposal Guidance Banner (Contract Rule) */}
+      {!isLocked && spec.parties.length > 1 && (
+        (() => {
+          const missingProposers = spec.parties.filter(
+            (p) => !scenarios.some((s) => s.proposer.toLowerCase() === p.toLowerCase())
+          )
+          if (missingProposers.length === 0) return null
+
+          const isConnectedMissing = account && missingProposers.some((p) => p.toLowerCase() === account.toLowerCase())
+
+          return (
+            <div className="p-3.5 bg-amber-50/80 border border-amber-200/90 rounded-xl flex items-start gap-3 text-xs text-amber-950">
+              <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+              <div className="space-y-1 leading-relaxed">
+                <div className="font-semibold text-amber-900">
+                  Contract Lock Requirement: Each Party Must Propose &ge; 1 Scenario
+                </div>
+                <p className="text-amber-900/90 font-sans">
+                  On-chain locking requires <em>every</em> counterparty to contribute at least one scenario.
+                  Currently,{' '}
+                  <strong>
+                    {missingProposers.map((p) => (account && p.toLowerCase() === account.toLowerCase() ? 'You' : short(p))).join(', ')}
+                  </strong>{' '}
+                  {missingProposers.length === 1 ? 'has' : 'have'} not proposed a scenario yet.
+                  {isConnectedMissing ? (
+                    <span className="block mt-1 font-medium text-amber-900">
+                      &rarr; Click any template below or propose a custom scenario to fulfill your party proposal requirement!
+                    </span>
+                  ) : (
+                    <span className="block mt-1 text-amber-800">
+                      &rarr; Switch active wallet to {short(missingProposers[0])} to add a scenario from their account before attempting to lock.
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+          )
+        })()
+      )}
+
       {/* 1-Click Scenario Templates */}
       {!isLocked && isParty && (
         <div className="p-3.5 sm:p-4 bg-[#faf9f5] border border-[#e7e5e0] rounded-xl space-y-2.5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <div className="text-xs font-semibold text-[#18181b] flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-[#a89260]" />
-              <span>One-Click Scenario Templates</span>
+              <span>One-Click Scenario Templates (Propose as {short(account || '')})</span>
             </div>
             <span className="text-[11px] text-[#71717a]">
               Pre-fill known edge cases to reach 4 green consensus scenarios quickly
