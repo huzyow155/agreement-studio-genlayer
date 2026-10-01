@@ -44,7 +44,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-14">
           <button
             onClick={onEnterApp}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-9 py-4 bg-[#111311] text-white hover:bg-black dark:bg-[#F5F7F3] dark:text-[#080A09] dark:hover:bg-white font-medium text-base rounded-full shadow-lg btn-luxury-cta cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-9 py-4 bg-[#111311] text-white hover:bg-black dark:bg-[#F5F7F3] dark:text-[#080A09] dark:hover:bg-white font-medium text-base rounded-full btn-luxury-cta cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span>Launch Studio App</span>
             <ArrowUpRight className="w-4 h-4" />

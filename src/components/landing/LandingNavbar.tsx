@@ -91,7 +91,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = memo(({ onEnterApp })
           {/* Primary CTA (Theme adaptive solid) */}
           <button
             onClick={onEnterApp}
-            className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 bg-[#111311] text-[#F5F7F3] dark:bg-[#F5F7F3] dark:text-[#111311] hover:opacity-90 font-semibold text-xs sm:text-sm rounded-full shadow-md btn-luxury-cta cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+            className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 bg-[#111311] text-[#F5F7F3] dark:bg-[#F5F7F3] dark:text-[#111311] hover:opacity-90 font-semibold text-xs sm:text-sm rounded-full btn-luxury-cta cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span>Launch App</span>
             <ArrowUpRight className="w-4 h-4" />

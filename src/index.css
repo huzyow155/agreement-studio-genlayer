@@ -144,19 +144,19 @@ body {
   will-change: transform, opacity;
 }
 
-/* Cinematic Subtle Light Sweep (Calm & Ambient) */
+/* Cinematic Subtle Light Sweep (Calm & Ambient - 14s gentle breath) */
 @keyframes lightSweepMotion {
   0% {
     transform: translate3d(-120%, -120%, 0) rotate(25deg);
     opacity: 0;
   }
-  12% {
+  15% {
     opacity: 0.38;
   }
-  48% {
+  55% {
     opacity: 0.38;
   }
-  62% {
+  70% {
     transform: translate3d(130%, 130%, 0) rotate(25deg);
     opacity: 0;
   }
@@ -186,12 +186,12 @@ body {
     rgba(216, 201, 167, 0.08) 53%,
     transparent 62%
   );
-  animation: lightSweepMotion 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: lightSweepMotion 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   pointer-events: none;
   z-index: 1;
 }
 
-/* Smooth Luxury Button Transition (280ms-300ms ease-in-out light on/off) */
+/* Smooth Luxury Button Transition with Ambient Light Glow */
 .btn-luxury-cta {
   transition: background-color 280ms ease-in-out,
               color 280ms ease-in-out,
@@ -199,14 +199,19 @@ body {
               transform 250ms ease-in-out,
               opacity 250ms ease-in-out,
               border-color 280ms ease-in-out;
+  box-shadow: 0 0 16px -2px rgba(216, 201, 167, 0.35), 0 4px 12px -2px rgba(0, 0, 0, 0.12);
 }
 
 .btn-luxury-cta:hover {
-  box-shadow: 0 10px 25px -5px rgba(216, 201, 167, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 24px 2px rgba(216, 201, 167, 0.50), 0 8px 16px -4px rgba(0, 0, 0, 0.18);
+}
+
+.dark .btn-luxury-cta {
+  box-shadow: 0 0 16px -2px rgba(216, 201, 167, 0.28), 0 4px 12px -2px rgba(0, 0, 0, 0.5);
 }
 
 .dark .btn-luxury-cta:hover {
-  box-shadow: 0 10px 28px -5px rgba(216, 201, 167, 0.20), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 24px 2px rgba(216, 201, 167, 0.45), 0 8px 18px -4px rgba(0, 0, 0, 0.6);
 }
 
 /* Edge Fades */

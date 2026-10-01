@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = memo(({
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mb-16 sm:mb-20">
           <button
             onClick={onEnterApp}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#111311] text-[#F5F7F3] dark:bg-[#F5F7F3] dark:text-[#111311] hover:opacity-90 font-semibold text-base rounded-full shadow-lg btn-luxury-cta cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-[#111311] text-[#F5F7F3] dark:bg-[#F5F7F3] dark:text-[#111311] hover:opacity-90 font-semibold text-base rounded-full btn-luxury-cta cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span>Launch App</span>
             <ArrowUpRight className="w-4 h-4" />
