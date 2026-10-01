@@ -45,12 +45,11 @@ Both reference files in `contracts-reference/` have been verified against the de
 ## Wallet Funding & Studionet Gas
 
 - **Read Operations are Free**: Loading specifications, checking scenario statuses, and inspecting on-chain adjudication rulings require zero GEN and do not require connecting a wallet.
-- **Write Operations Require Studionet Gas**: Submitting new clauses, testing scenarios against live validators, locking specifications, and triggering adjudication require gas (~0.05–0.1 GEN total for a full lifecycle).
-- **How to Fund a Studionet Wallet**:
-  1. The public GenLayer testnet faucet is for Asimov/Bradbury testnet, **not** Studionet.
-  2. To fund your wallet for Studionet (Chain ID `61999`), open the [GenLayer Studio](https://studio.genlayer.com).
-  3. Navigate to the **Accounts** panel on the left navigation bar.
-  4. GenLayer Studio provides pre-funded default accounts. You can transfer GEN from one of these accounts directly to your MetaMask Studionet address, or import an account private key into your wallet.
+- **Write Operations & Gas**: Submitting new clauses, testing scenarios against live validators, locking specifications, and triggering adjudication consume nominal studionet gas (~0.05–0.1 GEN total for a full test flow). Note that backend automated clients (via `genlayer-js`) can broadcast transactions on Studionet with zero balance; browser wallets (e.g. MetaMask) may prompt for gas fees.
+- **Funding & Faucet Guidance**:
+  1. The standalone public GenLayer testnet faucet (`testnet-faucet.genlayer.foundation`) targets the Asimov/Bradbury testnet, **not** Studionet.
+  2. Studionet accounts inside [GenLayer Studio](https://studio.genlayer.com) come pre-funded with test tokens for sandbox development.
+  3. If your external wallet shows 0 GEN and prompts for gas, check the GenLayer Studio Accounts panel for pre-funded sandbox accounts or built-in faucet options.
 
 ---
 

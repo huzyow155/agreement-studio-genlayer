@@ -198,7 +198,7 @@ export const App: React.FC = () => {
               </span>
             </div>
             <p className="text-[#52525b] leading-relaxed">
-              Viewing existing specs, scenarios, and rulings is free. Submitting state changes (creating specs, signing, locking, or adjudicating) consumes nominal studionet GEN (~0.05–0.1 GEN covers complete test runs). To fund an external wallet, transfer test GEN from a pre-funded development account in the{' '}
+              Viewing existing specs, scenarios, and rulings is free and requires zero GEN. Submitting state changes (creating specs, signing, locking, or adjudicating) consumes nominal studionet gas. Accounts in GenLayer Studio come pre-funded with test tokens; if your external wallet shows 0 GEN or requests gas, check the{' '}
               <a
                 href="https://studio.genlayer.com"
                 target="_blank"
@@ -207,7 +207,7 @@ export const App: React.FC = () => {
               >
                 GenLayer Studio
               </a>{' '}
-              Accounts panel.
+              Accounts panel for sandbox test accounts and faucet options (the standalone public faucet targets Asimov/Bradbury, not studionet).
             </p>
           </div>
         </div>

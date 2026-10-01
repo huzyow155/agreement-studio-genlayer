@@ -256,7 +256,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onEnterApp }) => {
             <span>Studionet Gas & Funding Guide</span>
           </div>
           <p className="leading-relaxed">
-            Reading contract state is free and requires no wallet. For writing transactions (drafting, signing, locking, adjudicating), connected wallets require a small balance of studionet GEN (roughly 0.05–0.1 GEN covers complete test runs). To fund an external wallet, transfer test GEN from a pre-funded development account in the{' '}
+            Reading contract state is free and requires no wallet. For writing transactions (drafting, signing, locking, adjudicating), connected wallets may require nominal studionet GEN gas. Accounts inside the{' '}
             <a
               href="https://studio.genlayer.com"
               target="_blank"
@@ -265,7 +265,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onEnterApp }) => {
             >
               GenLayer Studio
             </a>{' '}
-            Accounts panel.
+            sandbox come pre-funded for testing; if your external wallet shows 0 GEN, check Studio's Accounts panel for test accounts and faucet options (the standalone public faucet targets Asimov/Bradbury, not studionet).
           </p>
         </div>
       </main>
