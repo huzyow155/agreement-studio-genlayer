@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { LandingHero } from './components/LandingHero'
+import { LandingPage } from './components/landing/LandingPage'
 import { Header } from './components/Header'
 import { WalletModal } from './components/WalletModal'
 import { TransactionOverlay } from './components/TransactionOverlay'
@@ -145,7 +145,7 @@ export const App: React.FC = () => {
   if (currentRoute !== '/app') {
     return (
       <>
-        <LandingHero onEnterApp={() => navigate('/app')} />
+        <LandingPage onEnterApp={() => navigate('/app')} />
         <WalletModal />
         <TransactionOverlay />
         <HowItWorks
