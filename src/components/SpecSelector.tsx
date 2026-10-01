@@ -5,10 +5,16 @@ import { submitCreateSpec, getWriteClient, fetchSpec, computeDeterministicSpecId
 import { DEFAULT_SPEC_ID } from '../config/chain'
 import { Search, Plus, X, Sparkles, BookOpen } from 'lucide-react'
 
-const EXAMPLE_SPEC = {
+const EXAMPLE_SPEC_1 = {
   title: 'Software Delivery Milestone Agreement',
   clause: 'The contractor shall deliver the repository with pure ASCII code and passing tests within 7 calendar days of contract creation.',
   labelsCsv: 'DELIVERED, BREACH',
+}
+
+const EXAMPLE_SPEC_2 = {
+  title: 'Cloud Service Level Agreement (SLA)',
+  clause: 'The cloud service provider shall maintain monthly API uptime of at least 99.9% and respond to critical outage incidents within 1 hour.',
+  labelsCsv: 'COMPLIANT, VIOLATION',
 }
 
 interface SpecSelectorProps {
@@ -22,19 +28,23 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
 
   const [inputSpecId, setInputSpecId] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [modalMode, setModalMode] = useState<'example' | 'custom'>('example')
+  const [modalMode, setModalMode] = useState<'example1' | 'example2' | 'custom'>('example1')
 
   // Form fields for new spec
-  const [title, setTitle] = useState(EXAMPLE_SPEC.title)
-  const [clause, setClause] = useState(EXAMPLE_SPEC.clause)
-  const [labelsCsv, setLabelsCsv] = useState(EXAMPLE_SPEC.labelsCsv)
+  const [title, setTitle] = useState(EXAMPLE_SPEC_1.title)
+  const [clause, setClause] = useState(EXAMPLE_SPEC_1.clause)
+  const [labelsCsv, setLabelsCsv] = useState(EXAMPLE_SPEC_1.labelsCsv)
 
-  const openCreateModal = (mode: 'example' | 'custom') => {
+  const openCreateModal = (mode: 'example1' | 'example2' | 'custom') => {
     setModalMode(mode)
-    if (mode === 'example') {
-      setTitle(EXAMPLE_SPEC.title)
-      setClause(EXAMPLE_SPEC.clause)
-      setLabelsCsv(EXAMPLE_SPEC.labelsCsv)
+    if (mode === 'example1') {
+      setTitle(EXAMPLE_SPEC_1.title)
+      setClause(EXAMPLE_SPEC_1.clause)
+      setLabelsCsv(EXAMPLE_SPEC_1.labelsCsv)
+    } else if (mode === 'example2') {
+      setTitle(EXAMPLE_SPEC_2.title)
+      setClause(EXAMPLE_SPEC_2.clause)
+      setLabelsCsv(EXAMPLE_SPEC_2.labelsCsv)
     } else {
       setTitle('')
       setClause('')
@@ -43,12 +53,16 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
     setShowCreateModal(true)
   }
 
-  const handleSelectTab = (mode: 'example' | 'custom') => {
+  const handleSelectTab = (mode: 'example1' | 'example2' | 'custom') => {
     setModalMode(mode)
-    if (mode === 'example') {
-      setTitle(EXAMPLE_SPEC.title)
-      setClause(EXAMPLE_SPEC.clause)
-      setLabelsCsv(EXAMPLE_SPEC.labelsCsv)
+    if (mode === 'example1') {
+      setTitle(EXAMPLE_SPEC_1.title)
+      setClause(EXAMPLE_SPEC_1.clause)
+      setLabelsCsv(EXAMPLE_SPEC_1.labelsCsv)
+    } else if (mode === 'example2') {
+      setTitle(EXAMPLE_SPEC_2.title)
+      setClause(EXAMPLE_SPEC_2.clause)
+      setLabelsCsv(EXAMPLE_SPEC_2.labelsCsv)
     } else {
       setTitle('')
       setClause('')
@@ -134,6 +148,17 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[#71717a] font-medium">Agreement Case:</span>
         <button
+          onClick={() => onSelectSpecId('a003a9db5998')}
+          className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
+            currentSpecId === 'a003a9db5998'
+              ? 'bg-[#18181b] text-white shadow-xs'
+              : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
+          }`}
+        >
+          a003a9db5998 (Demo 2 SLA Locked)
+        </button>
+
+        <button
           onClick={() => onSelectSpecId('b1e0205a4909')}
           className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
             currentSpecId === 'b1e0205a4909'
@@ -166,7 +191,7 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
           {DEFAULT_SPEC_ID} (Baseline Demo)
         </button>
 
-        {currentSpecId !== DEFAULT_SPEC_ID && currentSpecId !== '0b60bff5d312' && currentSpecId !== 'b1e0205a4909' && (
+        {currentSpecId !== DEFAULT_SPEC_ID && currentSpecId !== '0b60bff5d312' && currentSpecId !== 'b1e0205a4909' && currentSpecId !== 'a003a9db5998' && (
           <span className="px-3 py-1.5 bg-[#18181b] text-white rounded-lg font-mono font-medium shadow-xs">
             {currentSpecId} (Active)
           </span>
@@ -193,14 +218,24 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
           </button>
         </form>
 
-        {/* Separate Try Complete Example button */}
+        {/* Try Demo 1 button */}
         <button
-          onClick={() => openCreateModal('example')}
+          onClick={() => openCreateModal('example1')}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-[#faf9f5] border border-[#d8c9a7] text-[#18181b] hover:bg-[#f3efdf] rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
-          title="Try a complete example with tested clause & scenario templates"
+          title="Try Demo 1 (Software Delivery Agreement)"
         >
           <Sparkles className="w-3.5 h-3.5 text-[#a89260]" />
-          <span>Try Complete Example</span>
+          <span>Demo 1 (Software)</span>
+        </button>
+
+        {/* Try Demo 2 button */}
+        <button
+          onClick={() => openCreateModal('example2')}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fa] border border-[#a8c2d8] text-[#18181b] hover:bg-[#e7eff6] rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
+          title="Try Demo 2 (Cloud SLA Agreement)"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-[#3b7ea1]" />
+          <span>Demo 2 (Cloud SLA)</span>
         </button>
 
         {/* Start Your Own button */}
@@ -229,11 +264,15 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
             <div className="flex items-center justify-between pb-3 border-b border-[#f4f4f5]">
               <div>
                 <h3 className="text-base font-bold text-[#18181b]">
-                  {modalMode === 'example' ? 'Try Complete Example Spec' : 'Draft New Agreement Spec'}
+                  {modalMode === 'example1'
+                    ? 'Try Demo 1: Software Delivery Agreement'
+                    : modalMode === 'example2'
+                    ? 'Try Demo 2: Cloud Service Level Agreement (SLA)'
+                    : 'Draft Custom Agreement Spec'}
                 </h3>
                 <p className="text-xs text-[#71717a] mt-0.5">
-                  {modalMode === 'example'
-                    ? 'Pre-filled with tested wording that pairs directly with the 4 scenario templates.'
+                  {modalMode === 'example1' || modalMode === 'example2'
+                    ? 'Pre-filled with tested wording that pairs directly with tested scenario templates.'
                     : 'Propose an agreement clause with custom text and outcome labels.'}
                 </p>
               </div>
@@ -246,52 +285,88 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
             </div>
 
             {/* Mode Tabs */}
-            <div className="flex items-center gap-2 p-1 bg-[#f4f4f5] rounded-lg text-xs font-medium">
+            <div className="flex items-center gap-1.5 p-1 bg-[#f4f4f5] rounded-lg text-xs font-medium">
               <button
                 type="button"
-                onClick={() => handleSelectTab('example')}
-                className={`flex-1 py-1.5 px-3 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                  modalMode === 'example'
+                onClick={() => handleSelectTab('example1')}
+                className={`flex-1 py-1.5 px-2.5 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                  modalMode === 'example1'
                     ? 'bg-white text-[#18181b] shadow-2xs font-semibold'
                     : 'text-[#71717a] hover:text-[#18181b]'
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#a89260]" />
-                <span>Try Complete Example (Pre-Filled)</span>
+                <span>Demo 1 (Software)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectTab('example2')}
+                className={`flex-1 py-1.5 px-2.5 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                  modalMode === 'example2'
+                    ? 'bg-white text-[#18181b] shadow-2xs font-semibold'
+                    : 'text-[#71717a] hover:text-[#18181b]'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#3b7ea1]" />
+                <span>Demo 2 (Cloud SLA)</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleSelectTab('custom')}
-                className={`flex-1 py-1.5 px-3 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-1.5 px-2.5 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1 ${
                   modalMode === 'custom'
                     ? 'bg-white text-[#18181b] shadow-2xs font-semibold'
                     : 'text-[#71717a] hover:text-[#18181b]'
                 }`}
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Start Your Own (Blank)</span>
+                <span>Custom</span>
               </button>
             </div>
 
-            {modalMode === 'example' && (
+            {modalMode === 'example1' && (
               <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-lg text-xs text-amber-950 space-y-1">
                 <div className="font-semibold text-amber-900 flex items-center gap-1.5">
                   <BookOpen className="w-3.5 h-3.5 text-amber-700" />
-                  <span>Ready-Made Demo Specification</span>
+                  <span>Ready-Made Demo 1 Specification</span>
                 </div>
                 <p className="text-amber-900/90 leading-relaxed font-sans">
                   This Software Delivery agreement has verified unambiguous phrasing. Once created on Studionet, invite Party B, and ensure <strong>both Party A and Party B</strong> each propose scenarios from their respective wallets (or use the 4 One-Click Scenario Templates across both wallets) so the on-chain lock rule is satisfied!
                 </p>
-                <div className="pt-1">
+                <div className="pt-1 flex items-center gap-3">
                   <button
                     type="button"
                     onClick={() => {
-                      onSelectSpecId('0b60bff5d312')
+                      onSelectSpecId('b1e0205a4909')
                       setShowCreateModal(false)
                     }}
                     className="text-amber-800 underline font-medium hover:text-amber-950 cursor-pointer"
                   >
-                    Or jump directly to the live on-chain walkthrough case (0b60bff5d312) &rarr;
+                    Load Dual-Signed Demo 1 (b1e0205a4909) &rarr;
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {modalMode === 'example2' && (
+              <div className="p-3 bg-sky-50/70 border border-sky-200/80 rounded-lg text-xs text-sky-950 space-y-1">
+                <div className="font-semibold text-sky-900 flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 text-sky-700" />
+                  <span>Ready-Made Demo 2 Specification (Cloud SLA)</span>
+                </div>
+                <p className="text-sky-900/90 leading-relaxed font-sans">
+                  This Cloud Service Level Agreement evaluates monthly uptime (&ge; 99.9%) and incident response times (&le; 1 hour). Each party proposes scenarios testing uptime breaches and response latencies to satisfy the multi-proposer lock rule.
+                </p>
+                <div className="pt-1 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectSpecId('a003a9db5998')
+                      setShowCreateModal(false)
+                    }}
+                    className="text-sky-800 underline font-medium hover:text-sky-950 cursor-pointer"
+                  >
+                    Load Locked & Adjudicated Demo 2 (a003a9db5998) &rarr;
                   </button>
                 </div>
               </div>

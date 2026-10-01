@@ -12,7 +12,7 @@ import {
 } from '../services/contractService'
 import { Play, Plus, AlertCircle, CheckCircle2, Clock, ShieldAlert, Info, Sparkles } from 'lucide-react'
 
-const SCENARIO_TEMPLATES = [
+const SOFTWARE_DELIVERY_TEMPLATES = [
   {
     title: 'On-time Delivery',
     text: 'Contractor delivers the complete repository with pure ASCII code and all passing tests on day 2.',
@@ -32,6 +32,29 @@ const SCENARIO_TEMPLATES = [
     title: 'Late Missing Files',
     text: 'Contractor sends an email saying done with no files attached 10 days later.',
     expected: 'BREACH',
+  },
+]
+
+const CLOUD_SLA_TEMPLATES = [
+  {
+    title: '99.95% Uptime & Fast Response',
+    text: 'The provider maintains 99.95% API uptime for the month and acknowledged the single outage alert within 20 minutes.',
+    expected: 'COMPLIANT',
+  },
+  {
+    title: '100% Monthly Availability',
+    text: 'The provider maintains 100% monthly availability with zero downtime and all healthchecks passing.',
+    expected: 'COMPLIANT',
+  },
+  {
+    title: 'Late Incident Response (4h)',
+    text: 'A critical database outage occurs and the support team does not respond or investigate for 4 hours.',
+    expected: 'VIOLATION',
+  },
+  {
+    title: '98.5% Uptime Breach',
+    text: 'Monthly server availability drops to 98.5% due to repeated unscheduled infrastructure failures.',
+    expected: 'VIOLATION',
   },
 ]
 
@@ -64,7 +87,14 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
   const isLocked = spec.status === 'LOCKED'
   const isParty = account && spec.parties.some((p) => p.toLowerCase() === account.toLowerCase())
 
-  const handleApplyTemplate = (tpl: typeof SCENARIO_TEMPLATES[0]) => {
+  const isSlaSpec =
+    spec.labels.some((l) => l.toUpperCase() === 'VIOLATION' || l.toUpperCase() === 'COMPLIANT') ||
+    spec.clause.toLowerCase().includes('uptime') ||
+    spec.title.toLowerCase().includes('sla')
+
+  const templates = isSlaSpec ? CLOUD_SLA_TEMPLATES : SOFTWARE_DELIVERY_TEMPLATES
+
+  const handleApplyTemplate = (tpl: { title: string; text: string; expected: string }) => {
     setIsAdding(true)
     setNewText(tpl.text)
     const match = spec.labels.find((l) => l.toUpperCase() === tpl.expected.toUpperCase())
@@ -196,14 +226,16 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <div className="text-xs font-semibold text-[#18181b] flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-[#a89260]" />
-              <span>One-Click Scenario Templates (Propose as {short(account || '')})</span>
+              <span>
+                One-Click Scenario Templates ({isSlaSpec ? 'Cloud SLA' : 'Software Delivery'} &bull; Propose as {short(account || '')})
+              </span>
             </div>
             <span className="text-[11px] text-[#71717a]">
               Pre-fill known edge cases to reach 4 green consensus scenarios quickly
             </span>
           </div>
           <div className="flex flex-wrap gap-2 pt-0.5">
-            {SCENARIO_TEMPLATES.map((tpl) => (
+            {templates.map((tpl) => (
               <button
                 key={tpl.title}
                 type="button"
@@ -230,7 +262,7 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
                 <Sparkles className="w-3 h-3 text-[#a89260]" />
                 Template:
               </span>
-              {SCENARIO_TEMPLATES.map((tpl) => (
+              {templates.map((tpl) => (
                 <button
                   key={tpl.title}
                   type="button"

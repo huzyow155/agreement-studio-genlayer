@@ -1,0 +1,32 @@
+{
+  "title": "Cloud Service Level Agreement (SLA)",
+  "clause": "The cloud service provider shall maintain monthly API uptime of at least 99.9% and respond to critical outage incidents within 1 hour.",
+  "labels": "COMPLIANT, VIOLATION",
+  "partyA": "0x44eEe1caf0122b61cfEdb1ad8714Fd9795E05508",
+  "partyB": "0xBa50cB37eeD342F545A5Fb12BC3E23C082D50DDb",
+  "specId": "a003a9db5998",
+  "factsId": "c9de95afdad5",
+  "verdict": "COMPLIANT",
+  "canaryPass": true,
+  "specHash": "71887136f5d820cdd7bb14cf814cd5b71ac46ba5aa46359e69ea3c2b56604b13",
+  "transactions": {
+    "txCreate": "0x53beef09cd27889589a585ec43648af06c6bb03274a1f34209658c99bdbaff6b",
+    "txInvite": "0x859ea5a870561cb73812bd8d8b1b7861dfc3f2265863d9866e52b12692168d4c",
+    "txSc1": "0x35086d09cb7e9173d091987244e28423acea616c619ea93a36edec71c65c7a16",
+    "txSc2": "0x0444b2b3ab9ed674fff0acb3c63c9cc79dc472c36f4a120665bca4848a1a73de",
+    "txSc3": "0x4c6036d839de128ef6caeb430c7708ddc312022c01caf77be79d6cdf0f08a2be",
+    "txSc4": "0x430fccb1053a01f60a4fba1a472db0435304b0332728ca9154f5a06ca111e906",
+    "txRuns": [
+      "0xb8826693660869f032daf33c1714a50c07b39c910e96a5ca9e3959e8a0790d24",
+      "0x51af999011d90fe5c5c0df4ea140b4f25ebd03fcfe95ae8dccd97e6b0094d265",
+      "0x815dd3a07a39bd091971447bb533375a49cc42b5ca5126e0a2197f4684ef355d",
+      "0x03f04bd61518e183cfb663a20ed4374370aac1216208c1695a1310119ad510b8"
+    ],
+    "txSignA": "0x611fddb7416a5d0824844bcaa575db2e7a1f0cd2d99173e44be582349922a9a2",
+    "txSignB": "0xdb9d38fe11b99e3029c95927ee0d10ae478a83d5c486c57630aec305363224f5",
+    "txLock": "0x4fb241df35f0e980737abb154d1fa4a396b5165e8fffb8c29984542babaa37c4",
+    "txFacts": "0xcf12bd437055716a4d73ee9ee0fb7fa83b01be6126ff82164da30c7ad44f47f8",
+    "txConfirm": "0x362f4b871fdfcdd9070127844063064da9f7462e1e1f6553679acf27451ddf1a",
+    "txAdj": "0x7f9c9a568a27d933cebbe2e99760c3b8d5a3cb1a8f9c08aaba32e01d02cb063e"
+  }
+}
