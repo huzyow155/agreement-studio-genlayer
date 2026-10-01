@@ -16,12 +16,27 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
   suiteReport,
   onSpecUpdated,
 }) => {
-  const { account, selectedWallet } = useWallet()
+  const { account, selectedWallet, requestAccountSwitch } = useWallet()
   const { executeTransaction, isBusy } = useTransaction()
 
   const isLocked = spec.status === 'LOCKED'
   const isParty = account && spec.parties.some((p) => p.toLowerCase() === account.toLowerCase())
   const hasSigned = account && spec.signed.some((s) => s.toLowerCase() === account.toLowerCase())
+
+  const pendingParties = spec.parties.filter(
+    (p) => !spec.signed.some((s) => s.toLowerCase() === p.toLowerCase())
+  )
+
+  const needsSwitchToOtherParty =
+    !isLocked &&
+    hasSigned &&
+    pendingParties.length > 0 &&
+    account &&
+    !pendingParties.some((p) => p.toLowerCase() === account.toLowerCase())
+
+  const isExternalAccount = !isLocked && Boolean(account) && !isParty && pendingParties.length > 0
+
+  const short = (addr?: string | null) => (addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : '')
 
   const readyToLock = suiteReport?.ready_to_lock === true
 
@@ -91,6 +106,45 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
           All counterparties must sign version {spec.version}. Locking is only permitted once every adversarial scenario evaluates to green.
         </p>
       </div>
+
+      {/* Account switch prompt when Party B signature is needed */}
+      {needsSwitchToOtherParty && (
+        <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-900">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+            <span>
+              Clause v{spec.version} still requires signature from{' '}
+              <strong>Party B ({short(pendingParties[0])})</strong>. Switch MetaMask to Party B's account to sign.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={requestAccountSwitch}
+            className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-medium rounded-lg border border-amber-300 transition-colors shrink-0 cursor-pointer text-xs self-start sm:self-auto"
+          >
+            Switch Account in MetaMask
+          </button>
+        </div>
+      )}
+
+      {isExternalAccount && (
+        <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-blue-900">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-blue-700 shrink-0" />
+            <span>
+              Connected as {short(account)}. To sign, switch MetaMask to registered party{' '}
+              <strong>{short(pendingParties[0])}</strong>.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={requestAccountSwitch}
+            className="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-900 font-medium rounded-lg border border-blue-300 transition-colors shrink-0 cursor-pointer text-xs self-start sm:self-auto"
+          >
+            Switch Account in MetaMask
+          </button>
+        </div>
+      )}
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-[#faf9f5] border border-[#e7e5e0] rounded-xl">
         {/* Sign Status */}

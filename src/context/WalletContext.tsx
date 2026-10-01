@@ -41,6 +41,7 @@ export interface WalletContextValue {
   connectWallet: (wallet: EIP6963ProviderDetail) => Promise<void>
   disconnectWallet: () => void
   switchToStudionet: () => Promise<boolean>
+  requestAccountSwitch: () => Promise<void>
 }
 
 const WalletContext = createContext<WalletContextValue | undefined>(undefined)
@@ -228,32 +229,71 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
           setWalletState('CONNECTED')
         }
 
-        // Setup account and chain change listeners
-        if (provider.on) {
-          provider.on('accountsChanged', (newAccounts: string[]) => {
-            if (!newAccounts || newAccounts.length === 0) {
-              disconnectWallet()
-            } else {
-              setAccount(newAccounts[0])
-            }
-          })
-          provider.on('chainChanged', (newChainIdHex: string) => {
-            const nextChainId = parseInt(newChainIdHex, 16)
-            setChainId(nextChainId)
-            if (nextChainId !== STUDIONET_CHAIN_ID) {
-              setWalletState('WRONG_CHAIN')
-            } else {
-              setWalletState('CONNECTED')
-            }
-          })
-        }
       } catch (err: any) {
         setErrorMessage(err.message || 'Failed to connect wallet')
         setWalletState('ERROR')
       }
     },
-    [disconnectWallet]
+    []
   )
+
+  // Persistent EIP-1193 listener for account and network changes
+  useEffect(() => {
+    const provider = selectedWallet?.provider || (typeof window !== 'undefined' ? (window as any).ethereum : null)
+    if (!provider || !provider.on) return
+
+    const handleAccountsChanged = (newAccounts: string[]) => {
+      if (!newAccounts || newAccounts.length === 0) {
+        setAccount(null)
+        setWalletState('DISCONNECTED')
+      } else {
+        const nextAccount = newAccounts[0]
+        setAccount(nextAccount)
+        setWalletState('CONNECTED')
+        setErrorMessage(null)
+      }
+    }
+
+    const handleChainChanged = (newChainIdHex: string) => {
+      const nextChainId = parseInt(newChainIdHex, 16)
+      setChainId(nextChainId)
+      if (nextChainId !== STUDIONET_CHAIN_ID) {
+        setWalletState('WRONG_CHAIN')
+      } else {
+        setWalletState('CONNECTED')
+      }
+    }
+
+    provider.on('accountsChanged', handleAccountsChanged)
+    provider.on('chainChanged', handleChainChanged)
+
+    return () => {
+      if (provider.removeListener) {
+        provider.removeListener('accountsChanged', handleAccountsChanged)
+        provider.removeListener('chainChanged', handleChainChanged)
+      }
+    }
+  }, [selectedWallet])
+
+  // Explicit EIP-2255 account switcher prompt
+  const requestAccountSwitch = useCallback(async () => {
+    const provider = selectedWallet?.provider || (typeof window !== 'undefined' ? (window as any).ethereum : null)
+    if (!provider) return
+    try {
+      await provider.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }],
+      })
+    } catch {
+      try {
+        const accs = await provider.request({ method: 'eth_requestAccounts' })
+        if (accs && accs.length > 0) {
+          setAccount(accs[0])
+          setWalletState('CONNECTED')
+        }
+      } catch {}
+    }
+  }, [selectedWallet])
 
   return (
     <WalletContext.Provider
@@ -269,6 +309,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         connectWallet,
         disconnectWallet,
         switchToStudionet,
+        requestAccountSwitch,
       }}
     >
       {children}

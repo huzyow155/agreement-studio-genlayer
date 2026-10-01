@@ -9,7 +9,7 @@ import {
   fetchFacts,
   fetchLatestFactsId
 } from '../services/contractService'
-import { UserCheck, Plus, Check } from 'lucide-react'
+import { UserCheck, Plus, Check, AlertTriangle } from 'lucide-react'
 
 interface FactsSectionProps {
   spec: SpecRecord
@@ -18,7 +18,7 @@ interface FactsSectionProps {
 }
 
 export const FactsSection: React.FC<FactsSectionProps> = ({ spec, facts, onFactsUpdated }) => {
-  const { account, selectedWallet } = useWallet()
+  const { account, selectedWallet, requestAccountSwitch } = useWallet()
   const { executeTransaction, isBusy } = useTransaction()
 
   const [isStipulating, setIsStipulating] = useState(false)
@@ -164,6 +164,40 @@ export const FactsSection: React.FC<FactsSectionProps> = ({ spec, facts, onFacts
               &ldquo;{facts.text}&rdquo;
             </p>
           </div>
+
+          {/* Account switch prompt when Party B confirmation is needed */}
+          {(() => {
+            const pendingConfirmParties = spec.parties.filter(
+              (p) => !facts.by.some((b) => b.toLowerCase() === p.toLowerCase())
+            )
+            const needsSwitch =
+              !isReadyForAdjudication &&
+              hasConfirmed &&
+              pendingConfirmParties.length > 0 &&
+              Boolean(account) &&
+              !pendingConfirmParties.some((p) => p.toLowerCase() === account.toLowerCase())
+
+            if (!needsSwitch) return null
+
+            return (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-900">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+                  <span>
+                    Dispute facts still require confirmation from{' '}
+                    <strong>Party B ({short(pendingConfirmParties[0])})</strong>. Switch MetaMask to Party B's account to confirm.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={requestAccountSwitch}
+                  className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-medium rounded-md border border-amber-300 transition-colors shrink-0 cursor-pointer text-xs self-start sm:self-auto"
+                >
+                  Switch Account in MetaMask
+                </button>
+              </div>
+            )
+          })()}
 
           {/* Confirmations List & Action */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 bg-white border border-[#e7e5e0] rounded-lg">
