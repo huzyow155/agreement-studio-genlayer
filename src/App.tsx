@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { LandingHero } from './components/LandingHero'
 import { Header } from './components/Header'
 import { WalletModal } from './components/WalletModal'
 import { TransactionOverlay } from './components/TransactionOverlay'
@@ -21,10 +22,36 @@ import {
   fetchLatestFactsId
 } from './services/contractService'
 import type { SpecRecord, ScenarioRecord, SuiteReport, FactsRecord, RulingRecord } from './types/contract'
-import { DEFAULT_SPEC_ID, DEFAULT_FACTS_ID, CONTRACT_ADDRESS } from './config/chain'
-import { Loader2, RefreshCw, ExternalLink } from 'lucide-react'
+import { DEFAULT_SPEC_ID, DEFAULT_FACTS_ID, CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL } from './config/chain'
+import { Loader2, RefreshCw, ExternalLink, ChevronDown, ChevronRight, HelpCircle, Shield, Layers } from 'lucide-react'
+
+// Downstream consumer contract address
+const CONSUMER_CONTRACT_ADDRESS = '0x9Fe97e71A0eeF88594abDea901B978519C98df34'
 
 export const App: React.FC = () => {
+  // Client-side routing: '/' for Landing Hero, '/app' for Workbench
+  const [currentRoute, setCurrentRoute] = useState<string>(() => {
+    const path = window.location.pathname.toLowerCase()
+    return path.startsWith('/app') ? '/app' : '/'
+  })
+
+  // Deep-linking & browser history synchronization
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.toLowerCase()
+      setCurrentRoute(path.startsWith('/app') ? '/app' : '/')
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  const navigate = (path: string) => {
+    window.history.pushState(null, '', path)
+    setCurrentRoute(path.startsWith('/app') ? '/app' : '/')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // App / Spec State
   const [currentSpecId, setCurrentSpecId] = useState<string>(DEFAULT_SPEC_ID)
   const [spec, setSpec] = useState<SpecRecord | null>(null)
   const [scenarios, setScenarios] = useState<ScenarioRecord[]>([])
@@ -35,6 +62,7 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [activeStep, setActiveStep] = useState<StepKey>('DRAFT')
   const [showHowItWorks, setShowHowItWorks] = useState<boolean>(false)
+  const [showTechnicalDetails, setShowTechnicalDetails] = useState<boolean>(false)
 
   // Load complete spec state from contract
   const loadSpecData = useCallback(async (specId: string) => {
@@ -57,7 +85,7 @@ export const App: React.FC = () => {
         setSuiteReport(rep)
 
         // Load facts
-        const factsId = await fetchLatestFactsId(specId) || DEFAULT_FACTS_ID
+        const factsId = (await fetchLatestFactsId(specId)) || DEFAULT_FACTS_ID
         const loadedFacts = await fetchFacts(specId, factsId)
         setFacts(loadedFacts)
 
@@ -98,8 +126,10 @@ export const App: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    loadSpecData(currentSpecId)
-  }, [currentSpecId, loadSpecData])
+    if (currentRoute === '/app') {
+      loadSpecData(currentSpecId)
+    }
+  }, [currentRoute, currentSpecId, loadSpecData])
 
   const handleSelectSpecId = (newId: string) => {
     setCurrentSpecId(newId)
@@ -109,29 +139,78 @@ export const App: React.FC = () => {
   const hasConfirmedFacts = (facts?.by?.length || 0) >= 2
   const hasRuling = Boolean(ruling)
 
+  // --------------------------------------------------------------------------
+  // Route 1: Landing Page (root /)
+  // --------------------------------------------------------------------------
+  if (currentRoute !== '/app') {
+    return (
+      <>
+        <LandingHero onEnterApp={() => navigate('/app')} />
+        <WalletModal />
+        <TransactionOverlay />
+        <HowItWorks
+          isOpen={showHowItWorks}
+          onClose={() => setShowHowItWorks(false)}
+        />
+      </>
+    )
+  }
+
+  // --------------------------------------------------------------------------
+  // Route 2: Interactive App Workbench (/app)
+  // --------------------------------------------------------------------------
   return (
     <div className="min-h-screen flex flex-col bg-[#faf9f5] text-[#18181b]">
       {/* Top Header */}
-      <Header onOpenHowItWorks={() => setShowHowItWorks(true)} />
+      <Header
+        onOpenHowItWorks={() => setShowHowItWorks(true)}
+        onNavigateHome={() => navigate('/')}
+        isAppRoute={true}
+      />
 
       {/* Main Content Canvas */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8">
-        {/* Intro Section */}
-        <section className="space-y-2 text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-white border border-[#e7e5e0] rounded-full text-xs font-mono text-[#52525b] shadow-xs">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-8">
+        {/* Intro Section - Font upsized */}
+        <section className="space-y-3 text-center sm:text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#e7e5e0] rounded-full text-xs sm:text-sm font-mono text-[#52525b] shadow-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <span>GenLayer Intelligent Contract &bull; Studionet</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#18181b] leading-tight">
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#18181b] leading-tight">
             Surface contract ambiguity before signing.
           </h1>
 
-          <p className="text-sm sm:text-base text-[#52525b] max-w-2xl leading-relaxed">
+          <p className="text-base sm:text-lg text-[#52525b] max-w-3xl leading-relaxed">
             Agreement Studio tests natural-language agreements through adversarial counterparty scenarios,
             validator consensus gates, and in-band canary calibration on the ClauseLab Intelligent Contract.
           </p>
         </section>
+
+        {/* Studionet Gas & Funding Guidance Box */}
+        <div className="bg-white border border-[#e7e5e0] rounded-2xl p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
+          <HelpCircle className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+          <div className="space-y-1 text-xs sm:text-sm">
+            <div className="font-semibold text-[#18181b] flex items-center gap-2">
+              <span>Studionet Gas & Transaction Funding</span>
+              <span className="text-[11px] font-mono font-normal px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+                Zero GEN needed for reading
+              </span>
+            </div>
+            <p className="text-[#52525b] leading-relaxed">
+              Viewing existing specs, scenarios, and rulings is free. Submitting state changes (creating specs, signing, locking, or adjudicating) consumes nominal studionet GEN (~0.05–0.1 GEN covers complete test runs). To fund an external wallet, transfer test GEN from a pre-funded development account in the{' '}
+              <a
+                href="https://studio.genlayer.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-[#18181b] underline underline-offset-2 hover:text-emerald-700"
+              >
+                GenLayer Studio
+              </a>{' '}
+              Accounts panel.
+            </p>
+          </div>
+        </div>
 
         {/* Spec Selector & Active Case Navigator */}
         <SpecSelector
@@ -150,9 +229,9 @@ export const App: React.FC = () => {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="py-16 text-center bg-white border border-[#e7e5e0] rounded-xl shadow-xs space-y-3">
-            <Loader2 className="w-6 h-6 text-[#18181b] animate-spin mx-auto" />
-            <div className="text-xs text-[#71717a] font-medium">
+          <div className="py-20 text-center bg-white border border-[#e7e5e0] rounded-2xl shadow-xs space-y-3">
+            <Loader2 className="w-7 h-7 text-[#18181b] animate-spin mx-auto" />
+            <div className="text-sm text-[#71717a] font-medium">
               Loading contract state from GenLayer Studionet...
             </div>
           </div>
@@ -221,41 +300,112 @@ export const App: React.FC = () => {
 
         {/* Spec Not Found Empty State */}
         {!isLoading && !spec && (
-          <div className="py-16 text-center bg-white border border-[#e7e5e0] rounded-xl shadow-xs space-y-4 px-4">
-            <h3 className="text-base font-semibold text-[#18181b]">Agreement Spec Not Found</h3>
-            <p className="text-xs text-[#71717a] max-w-sm mx-auto">
+          <div className="py-20 text-center bg-white border border-[#e7e5e0] rounded-2xl shadow-xs space-y-4 px-4">
+            <h3 className="text-lg font-semibold text-[#18181b]">Agreement Spec Not Found</h3>
+            <p className="text-sm text-[#71717a] max-w-sm mx-auto">
               Spec <code className="font-mono text-[#18181b]">{currentSpecId}</code> does not exist on the deployed contract.
             </p>
             <button
               onClick={() => handleSelectSpecId(DEFAULT_SPEC_ID)}
-              className="px-4 py-2 bg-[#18181b] text-white text-xs font-medium rounded-lg hover:bg-[#27272a] transition-all cursor-pointer inline-flex items-center gap-2"
+              className="px-5 py-2.5 bg-[#18181b] text-white text-sm font-medium rounded-lg hover:bg-[#27272a] transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className="w-4 h-4" />
               <span>Load Verified Live Spec ({DEFAULT_SPEC_ID})</span>
             </button>
           </div>
         )}
+
+        {/* Collapsed Technical Details & Secondary Contract Addresses (Section 2) */}
+        <div className="border border-[#e7e5e0] rounded-2xl bg-white overflow-hidden shadow-xs">
+          <button
+            onClick={() => setShowTechnicalDetails(!showTechnicalDetails)}
+            className="w-full px-5 py-4 flex items-center justify-between text-left text-sm font-medium text-[#52525b] hover:text-[#18181b] hover:bg-[#faf9f5] transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <Layers className="w-4 h-4 text-[#71717a]" />
+              <span className="font-semibold text-[#18181b]">Contract Addresses & Technical Details</span>
+              <span className="text-xs text-[#71717a] hidden sm:inline">(GenLayer Studionet)</span>
+            </div>
+            {showTechnicalDetails ? (
+              <ChevronDown className="w-4 h-4 text-[#71717a]" />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-[#71717a]" />
+            )}
+          </button>
+
+          {showTechnicalDetails && (
+            <div className="px-5 pb-5 pt-2 border-t border-[#e7e5e0] bg-[#faf9f5] space-y-4 text-xs sm:text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Primary Intelligent Contract */}
+                <div className="p-4 bg-white rounded-xl border border-[#e7e5e0] space-y-1.5">
+                  <div className="font-semibold text-[#18181b] flex items-center justify-between">
+                    <span>ClauseLab (Primary Contract)</span>
+                    <span className="text-[10px] font-mono uppercase bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">
+                      Active
+                    </span>
+                  </div>
+                  <div className="font-mono text-xs text-[#52525b] break-all">{CONTRACT_ADDRESS}</div>
+                  <a
+                    href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium text-[#18181b] hover:underline inline-flex items-center gap-1 pt-1"
+                  >
+                    View Primary Explorer <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+
+                {/* Downstream Consumer Contract (Secondary) */}
+                <div className="p-4 bg-white rounded-xl border border-[#e7e5e0] space-y-1.5">
+                  <div className="font-semibold text-[#18181b] flex items-center justify-between">
+                    <span>ClauseLabConsumer (Downstream)</span>
+                    <span className="text-[10px] font-mono uppercase bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded">
+                      Secondary
+                    </span>
+                  </div>
+                  <div className="font-mono text-xs text-[#52525b] break-all">{CONSUMER_CONTRACT_ADDRESS}</div>
+                  <a
+                    href={`${STUDIONET_EXPLORER_URL}/address/${CONSUMER_CONTRACT_ADDRESS}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium text-[#71717a] hover:text-[#18181b] hover:underline inline-flex items-center gap-1 pt-1"
+                  >
+                    View Consumer Explorer <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-[#71717a] leading-relaxed flex items-center gap-2">
+                <Shield className="w-3.5 h-3.5 text-[#52525b] shrink-0" />
+                <span>
+                  Network: GenLayer Studionet (Chain ID 61999) &bull; Equivalence Principle strictly evaluated by independent validator nodes.
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-[#e7e5e0] bg-white py-8 mt-12 text-xs text-[#71717a]">
+      {/* Footer - Single Prominent Explorer Link */}
+      <footer className="border-t border-[#e7e5e0] bg-white py-8 mt-12 text-xs sm:text-sm text-[#71717a]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-[#18181b]">ClauseLab</span>
+            <span className="font-semibold text-[#18181b]">Agreement Studio</span>
             <span>&bull;</span>
-            <span>Standalone GenLayer Intelligent Contract</span>
+            <span>Powered by ClauseLab Intelligent Contract</span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>Network: Studionet (61999)</span>
+          <div className="flex items-center gap-5 text-xs sm:text-sm">
+            <span>Studionet (61999)</span>
             <span>&bull;</span>
+            {/* The single primary explorer link */}
             <a
-              href={`https://explorer-studio.genlayer.com/address/${CONTRACT_ADDRESS}`}
+              href={`${STUDIONET_EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#18181b] hover:underline flex items-center gap-1"
+              className="text-[#18181b] font-medium hover:underline flex items-center gap-1"
             >
-              Explorer <ExternalLink className="w-3 h-3" />
+              Contract Explorer <ExternalLink className="w-3.5 h-3.5" />
             </a>
             <span>&bull;</span>
             <span>MIT License</span>
