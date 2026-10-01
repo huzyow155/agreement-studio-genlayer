@@ -101,6 +101,17 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[#71717a] font-medium">Agreement Case:</span>
         <button
+          onClick={() => onSelectSpecId('0b60bff5d312')}
+          className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
+            currentSpecId === '0b60bff5d312'
+              ? 'bg-[#18181b] text-white shadow-xs'
+              : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
+          }`}
+        >
+          0b60bff5d312 (Fresh Live Run)
+        </button>
+
+        <button
           onClick={() => onSelectSpecId(DEFAULT_SPEC_ID)}
           className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
             currentSpecId === DEFAULT_SPEC_ID
@@ -108,10 +119,10 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
               : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
           }`}
         >
-          {DEFAULT_SPEC_ID} (Live Evidence Demo)
+          {DEFAULT_SPEC_ID} (Baseline Demo)
         </button>
 
-        {currentSpecId !== DEFAULT_SPEC_ID && (
+        {currentSpecId !== DEFAULT_SPEC_ID && currentSpecId !== '0b60bff5d312' && (
           <span className="px-3 py-1.5 bg-[#18181b] text-white rounded-lg font-mono font-medium shadow-xs">
             {currentSpecId} (Active)
           </span>
@@ -231,12 +242,12 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
                   <button
                     type="button"
                     onClick={() => {
-                      onSelectSpecId(DEFAULT_SPEC_ID)
+                      onSelectSpecId('0b60bff5d312')
                       setShowCreateModal(false)
                     }}
                     className="text-amber-800 underline font-medium hover:text-amber-950 cursor-pointer"
                   >
-                    Or jump directly to the pre-adjudicated case ({DEFAULT_SPEC_ID}) &rarr;
+                    Or jump directly to the live on-chain walkthrough case (0b60bff5d312) &rarr;
                   </button>
                 </div>
               </div>

@@ -19,8 +19,8 @@ const SCENARIO_TEMPLATES = [
     expected: 'DELIVERED',
   },
   {
-    title: 'Passing CI Submission',
-    text: 'Contractor submits pull request containing complete repository with passing tests on day 5, verified by test suite.',
+    title: 'Full Delivery on Day 5',
+    text: 'Contractor delivers the full repository with pure ASCII code and all passing tests on day 5.',
     expected: 'DELIVERED',
   },
   {
@@ -30,7 +30,7 @@ const SCENARIO_TEMPLATES = [
   },
   {
     title: 'Late Missing Files',
-    text: 'Contractor sends an email saying done with no files attached 10 days later, exceeding deadline.',
+    text: 'Contractor sends an email saying done with no files attached 10 days later.',
     expected: 'BREACH',
   },
 ]
