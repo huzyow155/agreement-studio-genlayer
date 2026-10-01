@@ -3,6 +3,9 @@
 Agreement Studio is a pre-signing contract workbench that surfaces textual ambiguity and calibrates dispute adjudication through GenLayer multi-validator consensus.
 
 - **Live DApp**: [https://agreement-studio-genlayer.vercel.app](https://agreement-studio-genlayer.vercel.app)
+  - `/` — Cinematic landing page with live on-chain teaser and protocol walkthrough
+  - `/app` — Full interactive pre-signing and adjudication workbench
+- **Contract Explorer**: [https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406](https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406)
 - **GitHub Repository (dApp)**: [https://github.com/huzyow155/agreement-studio-genlayer](https://github.com/huzyow155/agreement-studio-genlayer)
 - **Canonical Smart Contract Repository**: [https://github.com/huzyow155/clauselab-genlayer](https://github.com/huzyow155/clauselab-genlayer)
 - **Network**: GenLayer Studionet (Chain ID `61999`)
@@ -11,14 +14,22 @@ Agreement Studio is a pre-signing contract workbench that surfaces textual ambig
 
 ---
 
-## Smart Contracts
+## Smart Contract
 
-The application interacts with verified Intelligent Contracts deployed on GenLayer Studionet. Reference copies with identical on-chain source hashes are included in [`contracts-reference/`](contracts-reference/).
+The core agreement verification engine is deployed on GenLayer Studionet:
 
-| Contract | Purpose | Studionet Address | Explorer Link | Reference Source | Canonical Repository |
-|---|---|---|---|---|---|
-| **ClauseLab** | Core Intelligent Contract executing adversarial scenario consensus and canary-calibrated dispute adjudication | `0xf227D68595178A2192888c85E3550fEff4b79406` | [View on Explorer](https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406) | [`contracts-reference/ClauseLab.py`](contracts-reference/ClauseLab.py) | [clauselab-genlayer](https://github.com/huzyow155/clauselab-genlayer) |
-| **ClauseLabConsumer** | Downstream contract consuming ClauseLab rulings and escalating to human arbitration if canary validation fails | `0x9Fe97e71A0eeF88594abDea901B978519C98df34` | [View on Explorer](https://explorer-studio.genlayer.com/address/0x9Fe97e71A0eeF88594abDea901B978519C98df34) | [`contracts-reference/ClauseLabConsumer.py`](contracts-reference/ClauseLabConsumer.py) | [clauselab-genlayer](https://github.com/huzyow155/clauselab-genlayer) |
+- **ClauseLab Contract Address**: [`0xf227D68595178A2192888c85E3550fEff4b79406`](https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406)
+- **Purpose**: Executes adversarial scenario consensus and canary-calibrated dispute adjudication across independent LLM validators.
+- **Reference Source**: [`contracts-reference/ClauseLab.py`](contracts-reference/ClauseLab.py) (matches deploy transaction `0xf2d7bfa4...`)
+- **Canonical Repo**: [huzyow155/clauselab-genlayer](https://github.com/huzyow155/clauselab-genlayer)
+
+<details>
+<summary><strong>Technical Details & Downstream Consumer Contract</strong></summary>
+
+### Downstream Consumer
+- **ClauseLabConsumer Address**: [`0x9Fe97e71A0eeF88594abDea901B978519C98df34`](https://explorer-studio.genlayer.com/address/0x9Fe97e71A0eeF88594abDea901B978519C98df34)
+- **Purpose**: Consumes ClauseLab rulings and escalates to human arbitration if canary validation fails.
+- **Reference Source**: [`contracts-reference/ClauseLabConsumer.py`](contracts-reference/ClauseLabConsumer.py)
 
 ### On-Chain Source Verification
 Both reference files in `contracts-reference/` have been verified against the deployment transactions on GenLayer Studionet RPC (`eth_getTransactionByHash`):
@@ -26,6 +37,20 @@ Both reference files in `contracts-reference/` have been verified against the de
   **Deployed Code SHA-256:** `984ec7509168e04dcb615f44c198648d3594665f1f5daf7ee15bc128e83b9f10` *(Exact Match)*
 - `ClauseLabConsumer.py` deploy tx: `0x12adde0727804c01062fcb5be5c2b980afc70c1aa745cf2fb39f53a94a267406`  
   **Deployed Code SHA-256:** `0cb11e6c617b8e4686aff24af1f83fbf028350a31f1d95e7465b3e7914dd6438` *(Exact Match)*
+
+</details>
+
+---
+
+## Wallet Funding & Studionet Gas
+
+- **Read Operations are Free**: Loading specifications, checking scenario statuses, and inspecting on-chain adjudication rulings require zero GEN and do not require connecting a wallet.
+- **Write Operations Require Studionet Gas**: Submitting new clauses, testing scenarios against live validators, locking specifications, and triggering adjudication require gas (~0.05–0.1 GEN total for a full lifecycle).
+- **How to Fund a Studionet Wallet**:
+  1. The public GenLayer testnet faucet is for Asimov/Bradbury testnet, **not** Studionet.
+  2. To fund your wallet for Studionet (Chain ID `61999`), open the [GenLayer Studio](https://studio.genlayer.com).
+  3. Navigate to the **Accounts** panel on the left navigation bar.
+  4. GenLayer Studio provides pre-funded default accounts. You can transfer GEN from one of these accounts directly to your MetaMask Studionet address, or import an account private key into your wallet.
 
 ---
 
