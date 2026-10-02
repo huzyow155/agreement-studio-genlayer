@@ -235,19 +235,33 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
             </span>
           </div>
           <div className="flex flex-wrap gap-2 pt-0.5">
-            {templates.map((tpl) => (
-              <button
-                key={tpl.title}
-                type="button"
-                onClick={() => handleApplyTemplate(tpl)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#e7e5e0] hover:border-[#18181b] rounded-lg text-xs text-[#18181b] font-medium transition-colors shadow-2xs cursor-pointer group"
-              >
-                <span>{tpl.title}</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#f4f4f5] text-[#52525b] border border-[#e4e4e7] group-hover:bg-[#18181b] group-hover:text-white transition-colors">
-                  {tpl.expected}
-                </span>
-              </button>
-            ))}
+            {templates.map((tpl) => {
+              const isUsed = scenarios.some(
+                (s) => s.text.trim().toLowerCase() === tpl.text.trim().toLowerCase()
+              )
+              return (
+                <button
+                  key={tpl.title}
+                  type="button"
+                  onClick={() => !isUsed && handleApplyTemplate(tpl)}
+                  disabled={isUsed}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors shadow-2xs group ${
+                    isUsed
+                      ? 'bg-[#f4f4f5] border border-[#e4e4e7] text-[#a1a1aa] cursor-default opacity-60'
+                      : 'bg-white border border-[#e7e5e0] hover:border-[#18181b] text-[#18181b] cursor-pointer'
+                  }`}
+                >
+                  <span>{isUsed ? `✓ ${tpl.title}` : tpl.title}</span>
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border transition-colors ${
+                    isUsed
+                      ? 'bg-[#e4e4e7] text-[#a1a1aa] border-[#d4d4d8]'
+                      : 'bg-[#f4f4f5] text-[#52525b] border-[#e4e4e7] group-hover:bg-[#18181b] group-hover:text-white'
+                  }`}>
+                    {isUsed ? 'Already Proposed' : tpl.expected}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
@@ -262,7 +276,9 @@ export const ScenariosTable: React.FC<ScenariosTableProps> = ({
                 <Sparkles className="w-3 h-3 text-[#a89260]" />
                 Template:
               </span>
-              {templates.map((tpl) => (
+              {templates.filter(
+                (tpl) => !scenarios.some((s) => s.text.trim().toLowerCase() === tpl.text.trim().toLowerCase())
+              ).map((tpl) => (
                 <button
                   key={tpl.title}
                   type="button"

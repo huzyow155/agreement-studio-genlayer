@@ -23,6 +23,7 @@ import {
 } from './services/contractService'
 import type { SpecRecord, ScenarioRecord, SuiteReport, FactsRecord, RulingRecord } from './types/contract'
 import { DEFAULT_SPEC_ID, DEFAULT_FACTS_ID, CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL } from './config/chain'
+import { useWallet } from './context/WalletContext'
 import { Loader2, RefreshCw, ExternalLink, ChevronDown, ChevronRight, Shield, Layers } from 'lucide-react'
 
 // Downstream consumer contract address
@@ -71,6 +72,9 @@ export const App: React.FC = () => {
   const [activeStep, setActiveStep] = useState<StepKey>('DRAFT')
   const [showHowItWorks, setShowHowItWorks] = useState<boolean>(false)
   const [showTechnicalDetails, setShowTechnicalDetails] = useState<boolean>(false)
+
+  // Track connected account so spec data reloads when wallet switches
+  const { account: connectedAccount } = useWallet()
 
   // Load complete spec state from contract
   const loadSpecData = useCallback(async (specId: string) => {
@@ -133,11 +137,12 @@ export const App: React.FC = () => {
     }
   }, [])
 
+  // Reload spec data when route, spec ID, or connected wallet changes
   useEffect(() => {
     if (currentRoute === '/app') {
       loadSpecData(currentSpecId)
     }
-  }, [currentRoute, currentSpecId, loadSpecData])
+  }, [currentRoute, currentSpecId, connectedAccount, loadSpecData])
 
   const handleSelectSpecId = (newId: string) => {
     setCurrentSpecId(newId)
