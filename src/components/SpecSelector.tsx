@@ -231,12 +231,12 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
             value={inputSpecId}
             onChange={(e) => setInputSpecId(e.target.value)}
             placeholder="Spec ID (12 hex)..."
-            className="w-28 sm:w-36 text-xs p-1.5 px-2.5 border border-[#e7e5e0] bg-white rounded-md font-mono focus:outline-hidden focus:ring-1 focus:ring-[#18181b]"
+            className="w-28 sm:w-36 text-xs p-1.5 px-2.5 border border-[#e7e5e0] dark:border-[var(--border-color)] bg-white dark:bg-[var(--surface-elevated)] text-[#18181b] dark:text-[var(--text-primary)] rounded-md font-mono focus:outline-hidden focus:ring-1 focus:ring-[#18181b]"
           />
           <button
             type="submit"
             disabled={!inputSpecId.trim()}
-            className="p-1.5 px-2.5 bg-white border border-[#e7e5e0] text-[#52525b] hover:text-[#18181b] rounded-md text-xs font-medium hover:bg-[#f4f4f5] transition-colors disabled:opacity-40 cursor-pointer"
+            className="p-1.5 px-2.5 bg-white dark:bg-[var(--surface-elevated)] border border-[#e7e5e0] dark:border-[var(--border-color)] text-[#52525b] dark:text-[var(--text-secondary)] hover:text-[#18181b] dark:hover:text-[var(--text-primary)] rounded-md text-xs font-medium hover:bg-[#f4f4f5] dark:hover:bg-[var(--surface)] transition-colors disabled:opacity-40 cursor-pointer"
             title="Load Spec"
           >
             <Search className="w-3.5 h-3.5" />
@@ -246,37 +246,37 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
         {/* Try Demo 1 button */}
         <button
           onClick={() => openCreateModal('example1')}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#faf9f5] border border-[#d8c9a7] text-[#18181b] hover:bg-[#f3efdf] rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#faf9f5] dark:bg-amber-950/20 border border-[#d8c9a7] dark:border-amber-700/40 text-[#18181b] dark:text-[#F5F7F3] hover:bg-[#f3efdf] dark:hover:bg-amber-900/30 rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
           title="Try Demo 1 (Software Delivery Agreement)"
         >
-          <Sparkles className="w-3.5 h-3.5 text-[#a89260]" />
+          <Sparkles className="w-3.5 h-3.5 text-[#a89260] dark:text-[#D8C9A7]" />
           <span>Demo 1 (Software)</span>
         </button>
 
         {/* Try Demo 2 button */}
         <button
           onClick={() => openCreateModal('example2')}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fa] border border-[#a8c2d8] text-[#18181b] hover:bg-[#e7eff6] rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fa] dark:bg-sky-950/30 border border-[#a8c2d8] dark:border-sky-700/40 text-[#18181b] dark:text-[#F5F7F3] hover:bg-[#e7eff6] dark:hover:bg-sky-900/40 rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
           title="Try Demo 2 (Cloud SLA Agreement)"
         >
-          <Sparkles className="w-3.5 h-3.5 text-[#3b7ea1]" />
+          <Sparkles className="w-3.5 h-3.5 text-[#3b7ea1] dark:text-[#38BDF8]" />
           <span>Demo 2 (Cloud SLA)</span>
         </button>
 
         {/* Try Demo 3 button — negative example with ambiguous clause */}
         <button
           onClick={() => onSelectSpecId('b38ab2fac8a8')}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 border border-red-200 text-red-800 hover:bg-red-100 rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 text-red-800 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
           title="View Demo 3: Ambiguous clause where Lock is blocked by red scenarios"
         >
-          <BookOpen className="w-3.5 h-3.5 text-red-600" />
+          <BookOpen className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
           <span>Demo 3 (Ambiguous ⚠)</span>
         </button>
 
         {/* Start Your Own button */}
         <button
           onClick={() => openCreateModal('custom')}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#e7e5e0] text-[#18181b] hover:bg-[#faf9f5] rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[var(--surface-elevated)] border border-[#e7e5e0] dark:border-[var(--border-color)] text-[#18181b] dark:text-[var(--text-primary)] hover:bg-[#faf9f5] dark:hover:bg-[var(--surface)] rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
           title="Draft a custom agreement spec from scratch"
         >
           <Plus className="w-3.5 h-3.5" />
@@ -320,17 +320,17 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
             </div>
 
             {/* Mode Tabs */}
-            <div className="flex items-center gap-1.5 p-1 bg-[#f4f4f5] rounded-lg text-xs font-medium">
+            <div className="flex items-center gap-1.5 p-1 bg-[#f4f4f5] dark:bg-[var(--surface-elevated)] rounded-lg text-xs font-medium border border-transparent dark:border-[var(--border-color)]">
               <button
                 type="button"
                 onClick={() => handleSelectTab('example1')}
                 className={`flex-1 py-1.5 px-2.5 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1 ${
                   modalMode === 'example1'
-                    ? 'bg-white text-[#18181b] shadow-2xs font-semibold'
-                    : 'text-[#71717a] hover:text-[#18181b]'
+                    ? 'bg-white dark:bg-[var(--surface)] text-[#18181b] dark:text-[var(--text-primary)] shadow-2xs font-semibold'
+                    : 'text-[#71717a] dark:text-[var(--text-secondary)] hover:text-[#18181b] dark:hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#a89260]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#a89260] dark:text-[#D8C9A7]" />
                 <span>Demo 1 (Software)</span>
               </button>
               <button
@@ -338,11 +338,11 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
                 onClick={() => handleSelectTab('example2')}
                 className={`flex-1 py-1.5 px-2.5 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1 ${
                   modalMode === 'example2'
-                    ? 'bg-white text-[#18181b] shadow-2xs font-semibold'
-                    : 'text-[#71717a] hover:text-[#18181b]'
+                    ? 'bg-white dark:bg-[var(--surface)] text-[#18181b] dark:text-[var(--text-primary)] shadow-2xs font-semibold'
+                    : 'text-[#71717a] dark:text-[var(--text-secondary)] hover:text-[#18181b] dark:hover:text-[var(--text-primary)]'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#3b7ea1]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#3b7ea1] dark:text-[#38BDF8]" />
                 <span>Demo 2 (Cloud SLA)</span>
               </button>
               <button
@@ -350,8 +350,8 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
                 onClick={() => handleSelectTab('custom')}
                 className={`flex-1 py-1.5 px-2.5 rounded-md transition-all cursor-pointer flex items-center justify-center gap-1 ${
                   modalMode === 'custom'
-                    ? 'bg-white text-[#18181b] shadow-2xs font-semibold'
-                    : 'text-[#71717a] hover:text-[#18181b]'
+                    ? 'bg-white dark:bg-[var(--surface)] text-[#18181b] dark:text-[var(--text-primary)] shadow-2xs font-semibold'
+                    : 'text-[#71717a] dark:text-[var(--text-secondary)] hover:text-[#18181b] dark:hover:text-[var(--text-primary)]'
                 }`}
               >
                 <Plus className="w-3.5 h-3.5" />
