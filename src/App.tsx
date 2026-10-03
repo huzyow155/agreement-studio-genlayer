@@ -61,7 +61,13 @@ export const App: React.FC = () => {
   }, [navigate])
 
   // App / Spec State
-  const [currentSpecId, setCurrentSpecId] = useState<string>(DEFAULT_SPEC_ID)
+  const [currentSpecId, setCurrentSpecId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const param = new URLSearchParams(window.location.search).get('spec')
+      if (param) return param
+    }
+    return DEFAULT_SPEC_ID
+  })
   const [spec, setSpec] = useState<SpecRecord | null>(null)
   const [scenarios, setScenarios] = useState<ScenarioRecord[]>([])
   const [suiteReport, setSuiteReport] = useState<SuiteReport | null>(null)
@@ -146,6 +152,11 @@ export const App: React.FC = () => {
 
   const handleSelectSpecId = (newId: string) => {
     setCurrentSpecId(newId)
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      url.searchParams.set('spec', newId)
+      window.history.replaceState(null, '', url.toString())
+    }
   }
 
   const isLocked = spec?.status === 'LOCKED'
