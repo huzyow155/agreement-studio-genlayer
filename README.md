@@ -69,7 +69,7 @@ Agreement Studio guides counterparties through an intuitive 5-step agreement lif
    - Click **Run Scenario** to have independent GenLayer validators evaluate each hypothetical case against the clause.
    - If validators find the text ambiguous or disagree on the outcome, the scenario turns **Red** (`UNDECIDABLE`).
    - If red scenarios appear, parties amend the wording until all scenarios turn **Green**.
-   - Once at least 4 green scenarios exist across 2 labels and both parties have signed, click **Lock Spec** to finalize the contract text and compute its immutable hash digest.
+   - Once at least 4 green scenarios exist across 2 labels and both parties have signed, click **Lock Spec** to finalize the contract text and compute its locked hash digest on-chain.
 
 3. **Step 3: Stipulate & Confirm Disputed Facts**
    - If a real-world dispute arises after performance, one party submits the factual situation under **Stipulate Facts**.

@@ -17,6 +17,12 @@ const EXAMPLE_SPEC_2 = {
   labelsCsv: 'COMPLIANT, VIOLATION',
 }
 
+const EXAMPLE_SPEC_3 = {
+  title: 'Consulting Deliverable Quality Agreement',
+  clause: 'The consultant shall produce work that is reasonably satisfactory and meets general professional expectations within a mutually agreeable timeframe.',
+  labelsCsv: 'ACCEPTABLE, UNACCEPTABLE',
+}
+
 interface SpecSelectorProps {
   currentSpecId: string
   onSelectSpecId: (specId: string) => void
@@ -28,14 +34,14 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
 
   const [inputSpecId, setInputSpecId] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const [modalMode, setModalMode] = useState<'example1' | 'example2' | 'custom'>('example1')
+  const [modalMode, setModalMode] = useState<'example1' | 'example2' | 'example3' | 'custom'>('example1')
 
   // Form fields for new spec
   const [title, setTitle] = useState(EXAMPLE_SPEC_1.title)
   const [clause, setClause] = useState(EXAMPLE_SPEC_1.clause)
   const [labelsCsv, setLabelsCsv] = useState(EXAMPLE_SPEC_1.labelsCsv)
 
-  const openCreateModal = (mode: 'example1' | 'example2' | 'custom') => {
+  const openCreateModal = (mode: 'example1' | 'example2' | 'example3' | 'custom') => {
     setModalMode(mode)
     if (mode === 'example1') {
       setTitle(EXAMPLE_SPEC_1.title)
@@ -45,6 +51,10 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
       setTitle(EXAMPLE_SPEC_2.title)
       setClause(EXAMPLE_SPEC_2.clause)
       setLabelsCsv(EXAMPLE_SPEC_2.labelsCsv)
+    } else if (mode === 'example3') {
+      setTitle(EXAMPLE_SPEC_3.title)
+      setClause(EXAMPLE_SPEC_3.clause)
+      setLabelsCsv(EXAMPLE_SPEC_3.labelsCsv)
     } else {
       setTitle('')
       setClause('')
@@ -53,7 +63,7 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
     setShowCreateModal(true)
   }
 
-  const handleSelectTab = (mode: 'example1' | 'example2' | 'custom') => {
+  const handleSelectTab = (mode: 'example1' | 'example2' | 'example3' | 'custom') => {
     setModalMode(mode)
     if (mode === 'example1') {
       setTitle(EXAMPLE_SPEC_1.title)
@@ -63,6 +73,10 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
       setTitle(EXAMPLE_SPEC_2.title)
       setClause(EXAMPLE_SPEC_2.clause)
       setLabelsCsv(EXAMPLE_SPEC_2.labelsCsv)
+    } else if (mode === 'example3') {
+      setTitle(EXAMPLE_SPEC_3.title)
+      setClause(EXAMPLE_SPEC_3.clause)
+      setLabelsCsv(EXAMPLE_SPEC_3.labelsCsv)
     } else {
       setTitle('')
       setClause('')
@@ -148,6 +162,17 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[#71717a] font-medium">Agreement Case:</span>
         <button
+          onClick={() => onSelectSpecId('b38ab2fac8a8')}
+          className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
+            currentSpecId === 'b38ab2fac8a8'
+              ? 'bg-red-700 text-white shadow-xs'
+              : 'bg-red-50 border border-red-200 text-red-800 hover:border-red-400'
+          }`}
+        >
+          b38ab2fac8a8 (Demo 3 Ambiguous ⚠)
+        </button>
+
+        <button
           onClick={() => onSelectSpecId('a003a9db5998')}
           className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
             currentSpecId === 'a003a9db5998'
@@ -191,7 +216,7 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
           {DEFAULT_SPEC_ID} (Baseline Demo)
         </button>
 
-        {currentSpecId !== DEFAULT_SPEC_ID && currentSpecId !== '0b60bff5d312' && currentSpecId !== 'b1e0205a4909' && currentSpecId !== 'a003a9db5998' && (
+        {currentSpecId !== DEFAULT_SPEC_ID && currentSpecId !== '0b60bff5d312' && currentSpecId !== 'b1e0205a4909' && currentSpecId !== 'a003a9db5998' && currentSpecId !== 'b38ab2fac8a8' && (
           <span className="px-3 py-1.5 bg-[#18181b] text-white rounded-lg font-mono font-medium shadow-xs">
             {currentSpecId} (Active)
           </span>
@@ -236,6 +261,16 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
         >
           <Sparkles className="w-3.5 h-3.5 text-[#3b7ea1]" />
           <span>Demo 2 (Cloud SLA)</span>
+        </button>
+
+        {/* Try Demo 3 button — negative example with ambiguous clause */}
+        <button
+          onClick={() => onSelectSpecId('b38ab2fac8a8')}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 border border-red-200 text-red-800 hover:bg-red-100 rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
+          title="View Demo 3: Ambiguous clause where Lock is blocked by red scenarios"
+        >
+          <BookOpen className="w-3.5 h-3.5 text-red-600" />
+          <span>Demo 3 (Ambiguous ⚠)</span>
         </button>
 
         {/* Start Your Own button */}

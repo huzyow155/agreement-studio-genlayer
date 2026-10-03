@@ -80,7 +80,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ isOpen, onClose }) => {
             <div>
               <h4 className="font-semibold text-sm text-[#18181b]">Dual Signatures & Spec Locking</h4>
               <p className="mt-1">
-                Parties amend vague text until all scenarios turn <strong className="text-emerald-700">GREEN</strong>. Once all counterparties sign and conditions pass (min 4 scenarios across 2 labels), the spec is locked and an immutable <code>spec_hash</code> digest is recorded.
+                Parties amend vague text until all scenarios turn <strong className="text-emerald-700">GREEN</strong>. Once all counterparties sign and conditions pass (min 4 scenarios across 2 labels), the spec is locked and a <code>spec_hash</code> digest is recorded on-chain.
               </p>
             </div>
           </div>

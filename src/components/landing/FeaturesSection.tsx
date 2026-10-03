@@ -32,7 +32,7 @@ export const FeaturesSection: React.FC = memo(() => {
       tag: 'INTEGRITY BINDING',
       title: 'Cryptographic Digest Binding',
       description:
-        'Once at least 4 green scenarios exist across outcome labels and both counterparties sign, the agreement locks an immutable SHA-256 digest binding all downstream rulings.',
+        'Once at least 4 green scenarios exist across outcome labels and both counterparties sign, the agreement locks a SHA-256 digest on-chain, binding all downstream rulings to the exact clause version.',
     },
   ]
 

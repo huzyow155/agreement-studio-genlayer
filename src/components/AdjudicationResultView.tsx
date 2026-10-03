@@ -94,7 +94,7 @@ export const AdjudicationResultView: React.FC<AdjudicationResultViewProps> = ({ 
               </button>
             </div>
             <p className="text-[11px] text-[#71717a]">
-              Guarantees ruling is bound to the exact immutable text and scenarios.
+              Verifies ruling is bound to the exact locked text and scenarios.
             </p>
           </div>
         </div>
