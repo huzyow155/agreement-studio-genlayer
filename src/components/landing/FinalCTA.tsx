@@ -68,7 +68,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
             <span>Studionet Gas &amp; Testing Information</span>
           </div>
           <p className="leading-relaxed">
-            Browsing specifications and inspecting verified rulings is free and requires zero GEN. On GenLayer Studionet (Chain ID 61999), gas consumption is currently not enforced (RPC gas price is 0 GEN), allowing connected MetaMask wallets to broadcast transactions without prior token funding. GenLayer Studio&apos;s sandbox accounts also operate with zero balance and do not support token transfers. If your wallet prompts for network confirmation, simply approve the Studionet network settings to proceed with live testing.
+            Browsing specifications and inspecting verified rulings is free. The Agreement Studio lifecycle does not custody or transfer GEN (no deposits, stakes, or escrow). For transaction execution on GenLayer Studionet (Chain ID 61999), gas consumption is currently not enforced (RPC gas price is 0 GEN), allowing connected MetaMask wallets to broadcast transactions without prior token funding. GenLayer Studio&apos;s sandbox accounts also operate with zero balance and do not support token transfers. If your wallet prompts for network confirmation, simply approve the Studionet network settings to proceed with live testing.
           </p>
         </div>
       </div>

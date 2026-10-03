@@ -45,9 +45,9 @@ Both reference files in `contracts-reference/` have been verified against the de
 ## Wallet Funding & Studionet Gas
 
 - **Read Operations are Free**: Loading specifications, checking scenario statuses, and inspecting on-chain adjudication rulings require zero GEN and do not require connecting a wallet.
-- **Write Operations & Gas**: On GenLayer Studionet (Chain ID 61999), gas consumption is currently not enforced (RPC gas price returns `0x0`). Connected browser wallets (e.g. MetaMask / Rabby via EIP-6963) and backend scripts can broadcast transactions without requiring prior native token funding.
+- **Write Operations & Gas**: The Agreement Studio workflow does not custody or transfer GEN (no escrow, stake, or deposit methods). On GenLayer Studionet (Chain ID 61999), gas consumption is currently not enforced (RPC gas price returns `0x0`). Connected browser wallets (e.g. MetaMask / Rabby via EIP-6963) and backend scripts can broadcast transactions without requiring prior native token funding.
 - **Funding & Faucet Guidance**:
-  1. The standalone public GenLayer faucet (`testnet-faucet.genlayer.foundation`) targets the Asimov/Bradbury testnet (Chain 4221), **not** Studionet (Chain 61999).
+  1. The standalone public GenLayer faucet (`testnet-faucet.genlayer.foundation`) targets the testnet Asimov/Bradbury (chain ID: xem docs.genlayer.com, chưa xác minh trong phiên này), **not** Studionet (Chain 61999).
   2. GenLayer Studio (`studio.genlayer.com`) operates in an interactive developer sandbox environment that explicitly does not support token transfers or require gas consumption.
   3. No faucet transfer is required to test Agreement Studio on Studionet: simply connect your browser wallet and approve the Studionet network settings.
 
