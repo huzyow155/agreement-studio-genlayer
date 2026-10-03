@@ -184,7 +184,7 @@ export const App: React.FC = () => {
   // Route 2: Interactive App Workbench (/app)
   // --------------------------------------------------------------------------
   return (
-    <div className="min-h-screen flex flex-col bg-[#faf9f5] text-[#18181b]">
+    <div className="min-h-screen flex flex-col bg-[var(--bg-main)] text-[var(--text-primary)] transition-colors duration-200">
       {/* Top Header */}
       <Header
         onOpenHowItWorks={() => setShowHowItWorks(true)}
@@ -197,14 +197,14 @@ export const App: React.FC = () => {
         {/* Focused Workbench Workspace Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#18181b]">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
               Agreement Workbench
             </h1>
-            <p className="text-sm text-[#71717a] mt-0.5">
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               Draft natural-language clauses, test adversarial edge cases, and inspect canary rulings.
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#e7e5e0] rounded-full text-xs font-mono text-[#52525b] shadow-xs self-start sm:self-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--surface)] border border-[var(--border-color)] rounded-full text-xs font-mono text-[var(--text-secondary)] shadow-xs self-start sm:self-auto">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <span>Studionet &bull; Chain 61999</span>
           </div>
