@@ -79,7 +79,7 @@ export const HeroSection: React.FC<HeroSectionProps> = memo(({
           </a>
         </div>
 
-        {/* Hero Glass Card (Live Studionet Teaser) */}
+        {/* Hero Glass Card (Studionet Preview Teaser) */}
         <div className="w-full max-w-2xl luxury-glass rounded-2xl p-5 sm:p-6 text-left space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--border-color)] pb-3">
             <div className="flex items-center gap-2">
@@ -89,7 +89,7 @@ export const HeroSection: React.FC<HeroSectionProps> = memo(({
                 }`}
               />
               <span className="text-xs uppercase font-mono tracking-wider font-semibold text-[var(--text-primary)]">
-                {loadingTeaser ? 'Querying Studionet RPC...' : 'Live On Studionet • Calibrated Agreement State'}
+                {loadingTeaser ? 'Querying Studionet RPC...' : 'Studionet Preview • Calibrated Agreement State'}
               </span>
             </div>
             <a

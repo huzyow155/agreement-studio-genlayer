@@ -308,7 +308,7 @@ export const App: React.FC = () => {
               className="px-5 py-2.5 bg-[#18181b] text-white text-sm font-medium rounded-lg hover:bg-[#27272a] transition-all cursor-pointer inline-flex items-center gap-2"
             >
               <RefreshCw className="w-4 h-4" />
-              <span>Load Verified Live Spec ({DEFAULT_SPEC_ID})</span>
+              <span>Load Verified Demo Spec ({DEFAULT_SPEC_ID})</span>
             </button>
           </div>
         )}

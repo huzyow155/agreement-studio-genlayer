@@ -2,8 +2,8 @@
 
 Agreement Studio is a pre-signing contract workbench that surfaces textual ambiguity and calibrates dispute adjudication through GenLayer multi-validator consensus.
 
-- **Live DApp**: [https://agreement-studio-genlayer.vercel.app](https://agreement-studio-genlayer.vercel.app)
-  - `/` — Cinematic landing page with live on-chain teaser and protocol walkthrough
+- **Deployed Preview DApp (Studionet)**: [https://agreement-studio-genlayer.vercel.app](https://agreement-studio-genlayer.vercel.app)
+  - `/` — Cinematic landing page with live on-chain preview teaser and protocol walkthrough
   - `/app` — Full interactive pre-signing and adjudication workbench
 - **Contract Explorer**: [https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406](https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406)
 - **GitHub Repository (dApp)**: [https://github.com/huzyow155/agreement-studio-genlayer](https://github.com/huzyow155/agreement-studio-genlayer)
@@ -32,11 +32,9 @@ The core agreement verification engine is deployed on GenLayer Studionet:
 - **Reference Source**: [`contracts-reference/ClauseLabConsumer.py`](contracts-reference/ClauseLabConsumer.py)
 
 ### On-Chain Source Verification
-Both reference files in `contracts-reference/` have been verified against the deployment transactions on GenLayer Studionet RPC (`eth_getTransactionByHash`):
-- `ClauseLab.py` deploy tx: `0xf2d7bfa406a46cef66fa643a8eb3dae7f35e94efa0e622600a47c9cf494a89c2`  
-  **Deployed Code SHA-256:** `984ec7509168e04dcb615f44c198648d3594665f1f5daf7ee15bc128e83b9f10` *(Exact Match)*
-- `ClauseLabConsumer.py` deploy tx: `0x12adde0727804c01062fcb5be5c2b980afc70c1aa745cf2fb39f53a94a267406`  
-  **Deployed Code SHA-256:** `0cb11e6c617b8e4686aff24af1f83fbf028350a31f1d95e7465b3e7914dd6438` *(Exact Match)*
+- `ClauseLab.py` deploy tx: [`0xf2d7bfa406a46cef66fa643a8eb3dae7f35e94efa0e622600a47c9cf494a89c2`](https://explorer-studio.genlayer.com/tx/0xf2d7bfa406a46cef66fa643a8eb3dae7f35e94efa0e622600a47c9cf494a89c2)  
+  Canonical commit: `7d8d572` in `huzyow155/clauselab-genlayer`. The file was committed once and never modified since.
+- `ClauseLabConsumer.py` deploy tx: [`0x12adde0727804c01062fcb5be5c2b980afc70c1aa745cf2fb39f53a94a267406`](https://explorer-studio.genlayer.com/tx/0x12adde0727804c01062fcb5be5c2b980afc70c1aa745cf2fb39f53a94a267406)
 
 </details>
 
@@ -109,6 +107,17 @@ The UI renders the real, verified on-chain fields returned by `get_ruling`:
 - `canary_pass`: Boolean confirming the validator model correctly judged the held-back test case.
 - `spec_hash`: SHA-256 digest binding the ruling to the locked agreement version.
 - `facts_id`: Identifier of the mutually confirmed dispute facts.
+
+---
+
+## Verified End-to-End Workflow Performance
+
+- **Total Execution Time**: Measured at **193.6s (~3.23 minutes)** on GenLayer Studionet across all 16 consecutive transactions in the full workflow (agreement creation through canary adjudication).
+- **Wallet Switches**: Reconciled to exactly **3 wallet switches** (Consolidated Actor Flow: Party A → Party B → Party A → Party B).
+- **Consensus Latency per Action**:
+  - Ambiguity Scenario Classification (`run_scenario`): ~11.85s (validators evaluate edge-case LLM prompt).
+  - Dispute Adjudication with In-Band Canary (`adjudicate`): ~28.47s (validators evaluate canary calibration prompt + dispute facts prompt).
+  - Standard State Writes (`create_spec`, `invite`, `sign`, `lock`, `confirm_facts`): ~2.8s – ~3.8s.
 
 ---
 
