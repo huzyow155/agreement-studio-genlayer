@@ -68,9 +68,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = memo(({ onEnterApp }) => {
             <span>Studionet Gas &amp; Testing Information</span>
           </div>
           <p className="leading-relaxed">
-            Browsing specifications and inspecting verified rulings is free and requires zero GEN. State-changing transactions (creating specs, proposing scenarios, signing) consume nominal studionet gas. GenLayer Studio&apos;s built-in accounts come pre-funded for testing. If your external MetaMask wallet shows 0 GEN on Studionet (Chain ID 61999), try transferring GEN from a Studio account, or check{' '}
-            <a href="https://docs.genlayer.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--text-primary)]">docs.genlayer.com</a>{' '}
-            for current faucet options. Note: the standalone public faucet at testnet-faucet.genlayer.foundation targets the Asimov/Bradbury testnet, not Studionet.
+            Browsing specifications and inspecting verified rulings is free and requires zero GEN. On GenLayer Studionet (Chain ID 61999), gas consumption is currently not enforced (RPC gas price is 0 GEN), allowing connected MetaMask wallets to broadcast transactions without prior token funding. GenLayer Studio&apos;s sandbox accounts also operate with zero balance and do not support token transfers. If your wallet prompts for network confirmation, simply approve the Studionet network settings to proceed with live testing.
           </p>
         </div>
       </div>
