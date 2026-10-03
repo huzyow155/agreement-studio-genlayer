@@ -114,10 +114,11 @@ The UI renders the real, verified on-chain fields returned by `get_ruling`:
 
 - **Total Execution Time**: Measured at **193.6s (~3.23 minutes)** on GenLayer Studionet across all 16 consecutive transactions in the full workflow (agreement creation through canary adjudication).
 - **Wallet Switches**: Reconciled to exactly **3 wallet switches** (Consolidated Actor Flow: Party A → Party B → Party A → Party B).
-- **Consensus Latency per Action**:
-  - Ambiguity Scenario Classification (`run_scenario`): ~11.85s (validators evaluate edge-case LLM prompt).
-  - Dispute Adjudication with In-Band Canary (`adjudicate`): ~28.47s (validators evaluate canary calibration prompt + dispute facts prompt).
-  - Standard State Writes (`create_spec`, `invite`, `sign`, `lock`, `confirm_facts`): ~2.8s – ~3.8s.
+- **Consensus Latency & Transaction Timing**:
+  - Across all 16 consecutive transactions, average transaction completion latency was **~12.1s per transaction** (193.6s total / 16 transactions).
+  - Estimated breakdown by operation type (broad estimates derived from the verified total execution run, not logged individually per-action):
+    - Standard state writes (`create_spec`, `invite`, `sign`, `lock`, `confirm_facts`): typical ~3s – ~8s.
+    - Validator LLM evaluation writes (`run_scenario`, `adjudicate`): typical ~12s – ~30s.
 
 ---
 
