@@ -151,7 +151,7 @@ export const WalletModal: React.FC = () => {
         {/* Footer note */}
         <div className="pt-2 border-t border-[#f4f4f5] text-[11px] text-[#a1a1aa] flex items-center justify-between">
           <span>Target: GenLayer Studionet (61999)</span>
-          <span>Zero gas fees on Studionet</span>
+          <span>Studionet test environment</span>
         </div>
       </div>
     </div>
