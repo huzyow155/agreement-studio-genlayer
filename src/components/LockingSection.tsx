@@ -21,15 +21,36 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
 
   const isLocked = spec.status === 'LOCKED'
   const isParty = account && spec.parties.some((p) => p.toLowerCase() === account.toLowerCase())
-  const hasSigned = account && spec.signed.some((s) => s.toLowerCase() === account.toLowerCase())
 
-  const pendingParties = spec.parties.filter(
-    (p) => !spec.signed.some((s) => s.toLowerCase() === p.toLowerCase())
-  )
+  const getPartyDigest = (p: string): string | null => {
+    if (!spec.signed || Array.isArray(spec.signed)) return null
+    const key = Object.keys(spec.signed).find((k) => k.toLowerCase() === p.toLowerCase())
+    return key ? spec.signed[key] : null
+  }
+
+  const hasSignedAny = (p: string): boolean => {
+    if (!spec.signed) return false
+    if (Array.isArray(spec.signed)) {
+      return spec.signed.some((s) => s.toLowerCase() === p.toLowerCase())
+    }
+    return Object.keys(spec.signed).some((k) => k.toLowerCase() === p.toLowerCase())
+  }
+
+  const hasSignedCurrent = (p: string): boolean => {
+    if (!hasSignedAny(p)) return false
+    if (!spec.scenario_suite_digest || Array.isArray(spec.signed)) return true
+    const digest = getPartyDigest(p)
+    return digest === spec.scenario_suite_digest
+  }
+
+  const userSignedCurrent = Boolean(account && isParty && hasSignedCurrent(account))
+  const userNeedsResign = Boolean(account && isParty && hasSignedAny(account) && !userSignedCurrent)
+
+  const pendingParties = spec.parties.filter((p) => !hasSignedCurrent(p))
 
   const needsSwitchToOtherParty =
     !isLocked &&
-    hasSigned &&
+    userSignedCurrent &&
     pendingParties.length > 0 &&
     account &&
     !pendingParties.some((p) => p.toLowerCase() === account.toLowerCase())
@@ -45,11 +66,11 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
 
     const client = getWriteClient(account, selectedWallet.provider)
     await executeTransaction(
-      `Sign Agreement (v${spec.version})`,
+      userNeedsResign ? `Re-Sign Agreement Suite (v${spec.version})` : `Sign Agreement (v${spec.version})`,
       () => submitSign(client, spec.spec_id),
       async () => {
         const updated = await fetchSpec(spec.spec_id)
-        if (updated && updated.signed.some((s) => s.toLowerCase() === account.toLowerCase())) {
+        if (updated && hasSignedAny(account)) {
           onSpecUpdated(updated)
           return true
         }
@@ -123,6 +144,14 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
       return {
         title: 'Pending Dual Signature',
         description: `Both counterparties must sign clause v${spec.version}. Waiting for signature from ${short(addr)}. Switch wallet to ${short(addr)} to sign.`,
+      }
+    }
+    if (rawProblem.includes('must re-sign')) {
+      const match = rawProblem.match(/party\s+(0x[a-fA-F0-9]+)\s+must re-sign/i)
+      const addr = match ? match[1] : ''
+      return {
+        title: 'Re-Signature Required (Suite Changed)',
+        description: `The scenario suite changed after signing. Party ${short(addr)} must re-sign the updated scenario suite before locking.`,
       }
     }
     if (rawProblem.includes('not run at current version')) {
@@ -250,10 +279,15 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
               'Connect wallet to sign'
             ) : !isParty ? (
               'You are not a registered party for this spec'
-            ) : hasSigned ? (
+            ) : userNeedsResign ? (
+              <span className="text-amber-700 font-medium inline-flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                Scenario suite changed &mdash; re-signature required
+              </span>
+            ) : userSignedCurrent ? (
               <span className="text-emerald-700 font-medium inline-flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                Signed for clause v{spec.version}
+                Signed for clause v{spec.version} &amp; current suite
               </span>
             ) : (
               <span className="text-amber-700 font-medium inline-flex items-center gap-1">
@@ -267,14 +301,14 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
         {/* Action Buttons */}
         <div className="flex items-center gap-3">
           {/* Sign Button */}
-          {isParty && !hasSigned && (
+          {isParty && !userSignedCurrent && (
             <button
               onClick={handleSign}
               disabled={isBusy}
               className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[#18181b] text-white hover:bg-[#27272a] rounded-lg text-xs font-medium transition-all shadow-xs disabled:opacity-50 cursor-pointer"
             >
               <PenTool className="w-3.5 h-3.5" />
-              <span>Sign Clause v{spec.version}</span>
+              <span>{userNeedsResign ? 'Re-Sign Updated Suite' : `Sign Clause v${spec.version}`}</span>
             </button>
           )}
 

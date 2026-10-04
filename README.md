@@ -5,7 +5,7 @@ Agreement Studio is a pre-signing contract workbench that surfaces textual ambig
 - **Deployed Preview DApp (Studionet)**: [https://agreement-studio-genlayer.vercel.app](https://agreement-studio-genlayer.vercel.app)
   - `/` — Cinematic landing page with live on-chain preview teaser and protocol walkthrough
   - `/app` — Full interactive pre-signing and adjudication workbench
-- **Contract Explorer**: [https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406](https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406)
+- **Contract Explorer**: [https://explorer-studio.genlayer.com/address/0x13ac18867642fdCd740EA14c6EA7588abdCb7F73](https://explorer-studio.genlayer.com/address/0x13ac18867642fdCd740EA14c6EA7588abdCb7F73)
 - **GitHub Repository (dApp)**: [https://github.com/huzyow155/agreement-studio-genlayer](https://github.com/huzyow155/agreement-studio-genlayer)
 - **Canonical Smart Contract Repository**: [https://github.com/huzyow155/clauselab-genlayer](https://github.com/huzyow155/clauselab-genlayer)
 - **Network**: GenLayer Studionet (Chain ID `61999`)
@@ -18,23 +18,22 @@ Agreement Studio is a pre-signing contract workbench that surfaces textual ambig
 
 The core agreement verification engine is deployed on GenLayer Studionet:
 
-- **ClauseLab Contract Address**: [`0xf227D68595178A2192888c85E3550fEff4b79406`](https://explorer-studio.genlayer.com/address/0xf227D68595178A2192888c85E3550fEff4b79406)
+- **ClauseLab Contract Address**: [`0x13ac18867642fdCd740EA14c6EA7588abdCb7F73`](https://explorer-studio.genlayer.com/address/0x13ac18867642fdCd740EA14c6EA7588abdCb7F73)
 - **Purpose**: Executes adversarial scenario consensus and canary-calibrated dispute adjudication across independent LLM validators.
-- **Reference Source**: [`contracts-reference/ClauseLab.py`](contracts-reference/ClauseLab.py) (matches deploy transaction `0xf2d7bfa4...`)
+- **Reference Source**: [`contracts-reference/ClauseLab.py`](contracts-reference/ClauseLab.py) (matches deploy transaction `0xc5f20bf7...`)
 - **Canonical Repo**: [huzyow155/clauselab-genlayer](https://github.com/huzyow155/clauselab-genlayer)
 
 <details>
 <summary><strong>Technical Details & Downstream Consumer Contract</strong></summary>
 
 ### Downstream Consumer
-- **ClauseLabConsumer Address**: [`0x9Fe97e71A0eeF88594abDea901B978519C98df34`](https://explorer-studio.genlayer.com/address/0x9Fe97e71A0eeF88594abDea901B978519C98df34)
+- **ClauseLabConsumer Address**: [`0x97B9c47d0d5750ff8d8FED3C846DB966e7b0ba0B`](https://explorer-studio.genlayer.com/address/0x97B9c47d0d5750ff8d8FED3C846DB966e7b0ba0B)
 - **Purpose**: Consumes ClauseLab rulings and escalates to human arbitration if canary validation fails.
 - **Reference Source**: [`contracts-reference/ClauseLabConsumer.py`](contracts-reference/ClauseLabConsumer.py)
 
 ### On-Chain Source Verification
-- `ClauseLab.py` deploy tx: [`0xf2d7bfa406a46cef66fa643a8eb3dae7f35e94efa0e622600a47c9cf494a89c2`](https://explorer-studio.genlayer.com/tx/0xf2d7bfa406a46cef66fa643a8eb3dae7f35e94efa0e622600a47c9cf494a89c2)  
-  Canonical commit: `7d8d572` in `huzyow155/clauselab-genlayer`. The file was committed once and never modified since.
-- `ClauseLabConsumer.py` deploy tx: [`0x12adde0727804c01062fcb5be5c2b980afc70c1aa745cf2fb39f53a94a267406`](https://explorer-studio.genlayer.com/tx/0x12adde0727804c01062fcb5be5c2b980afc70c1aa745cf2fb39f53a94a267406)
+- `ClauseLab.py` deploy tx: [`0xc5f20bf7bdd3d2569f1edfd0719d3d21fd98a128e976ce7a8d71b288aab391ec`](https://explorer-studio.genlayer.com/tx/0xc5f20bf7bdd3d2569f1edfd0719d3d21fd98a128e976ce7a8d71b288aab391ec)
+- `ClauseLabConsumer.py` deploy tx: [`0xc6654e301e3f6599bdf76379c786804b7cc9e20051119aba1b18e8155d635d00`](https://explorer-studio.genlayer.com/tx/0xc6654e301e3f6599bdf76379c786804b7cc9e20051119aba1b18e8155d635d00)
 
 </details>
 

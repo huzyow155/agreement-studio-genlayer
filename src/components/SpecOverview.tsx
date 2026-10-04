@@ -223,7 +223,16 @@ export const SpecOverview: React.FC<SpecOverviewProps> = ({ spec, onSpecUpdated 
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {spec.parties.map((p) => {
-            const hasSigned = spec.signed.some((s) => s.toLowerCase() === p.toLowerCase())
+            const hasSignedAny = Array.isArray(spec.signed)
+              ? spec.signed.some((s) => s.toLowerCase() === p.toLowerCase())
+              : Object.keys(spec.signed || {}).some((s) => s.toLowerCase() === p.toLowerCase())
+
+            const signedDigest = !Array.isArray(spec.signed) && spec.signed
+              ? Object.entries(spec.signed).find(([k]) => k.toLowerCase() === p.toLowerCase())?.[1]
+              : null
+
+            const isCurrentDigest = isLocked || !spec.scenario_suite_digest || !signedDigest || signedDigest === spec.scenario_suite_digest
+
             const isMe = account && account.toLowerCase() === p.toLowerCase()
             const isSpecAuthor = p.toLowerCase() === spec.author.toLowerCase()
 
@@ -246,10 +255,14 @@ export const SpecOverview: React.FC<SpecOverviewProps> = ({ spec, onSpecUpdated 
                   )}
                 </div>
                 <div className="shrink-0 flex items-center gap-1.5">
-                  {hasSigned ? (
+                  {hasSignedAny && isCurrentDigest ? (
                     <span className="text-[11px] font-sans text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                       <Check className="w-3 h-3" />
                       Signed v{spec.version}
+                    </span>
+                  ) : hasSignedAny && !isCurrentDigest ? (
+                    <span className="text-[11px] font-sans text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                      Re-sign Needed
                     </span>
                   ) : (
                     <span className="text-[11px] font-sans text-[#71717a] bg-[#f4f4f5] px-2 py-0.5 rounded-full">

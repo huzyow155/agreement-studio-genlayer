@@ -8,8 +8,9 @@ export interface SpecRecord {
   version: number
   status: 'DRAFT' | 'LOCKED'
   parties: string[]
-  signed: string[]
+  signed: Record<string, string> | string[]
   n_scenarios: number
+  scenario_suite_digest?: string
   spec_hash: string
 }
 

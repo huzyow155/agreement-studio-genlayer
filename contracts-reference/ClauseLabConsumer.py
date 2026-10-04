@@ -11,8 +11,8 @@
 # authored this contract; it is included solely to allow reviewers to inspect
 # the cross-contract settlement and canary escalation behavior.
 #
-# Deployed Address (studionet): 0x9Fe97e71A0eeF88594abDea901B978519C98df34
-# Deploy Tx: 0x12adde0727804c01062fcb5be5c2b980afc70c1aa745cf2fb39f53a94a267406
+# Deployed Address (studionet): 0x97B9c47d0d5750ff8d8FED3C846DB966e7b0ba0B
+# Deploy Tx: 0xc6654e301e3f6599bdf76379c786804b7cc9e20051119aba1b18e8155d635d00
 # Deployed Code SHA-256: 0cb11e6c617b8e4686aff24af1f83fbf028350a31f1d95e7465b3e7914dd6438
 # ==============================================================================
 

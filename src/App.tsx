@@ -27,7 +27,7 @@ import { useWallet } from './context/WalletContext'
 import { Loader2, RefreshCw, ExternalLink, ChevronDown, ChevronRight, Shield, Layers } from 'lucide-react'
 
 // Downstream consumer contract address
-const CONSUMER_CONTRACT_ADDRESS = '0x9Fe97e71A0eeF88594abDea901B978519C98df34'
+const CONSUMER_CONTRACT_ADDRESS = '0x97B9c47d0d5750ff8d8FED3C846DB966e7b0ba0B'
 
 export const App: React.FC = () => {
   // Client-side routing: '/' for Landing Hero, '/app' for Workbench

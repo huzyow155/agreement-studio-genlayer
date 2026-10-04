@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useWallet } from '../context/WalletContext'
 import { useTransaction } from '../context/TransactionContext'
 import { submitCreateSpec, getWriteClient, fetchSpec, computeDeterministicSpecId } from '../services/contractService'
-import { DEFAULT_SPEC_ID } from '../config/chain'
+import { CONTRACT_ADDRESS } from '../config/chain'
 import { Search, Plus, X, Sparkles, BookOpen } from 'lucide-react'
 
 const EXAMPLE_SPEC_1 = {
@@ -136,7 +136,7 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
 
         // Fallback to get_latest_spec
         const rawLatest = await client.readContract({
-          address: '0xf227D68595178A2192888c85E3550fEff4b79406',
+          address: CONTRACT_ADDRESS,
           functionName: 'get_latest_spec',
           args: [account],
         })
@@ -162,61 +162,39 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[#71717a] font-medium">Agreement Case:</span>
         <button
-          onClick={() => onSelectSpecId('b38ab2fac8a8')}
+          onClick={() => onSelectSpecId('54bd67a9b46c')}
           className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
-            currentSpecId === 'b38ab2fac8a8'
+            currentSpecId === '54bd67a9b46c'
               ? 'bg-red-700 text-white shadow-xs'
               : 'bg-red-50 border border-red-200 text-red-800 hover:border-red-400'
           }`}
         >
-          b38ab2fac8a8 (Demo 3 Ambiguous ⚠)
+          54bd67a9b46c (Demo 3 Ambiguous ⚠)
         </button>
 
         <button
-          onClick={() => onSelectSpecId('a003a9db5998')}
+          onClick={() => onSelectSpecId('dec354a729a0')}
           className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
-            currentSpecId === 'a003a9db5998'
+            currentSpecId === 'dec354a729a0'
               ? 'bg-[#18181b] text-white shadow-xs'
               : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
           }`}
         >
-          a003a9db5998 (Demo 2 SLA Locked)
+          dec354a729a0 (Demo 2 SLA Locked)
         </button>
 
         <button
-          onClick={() => onSelectSpecId('b1e0205a4909')}
+          onClick={() => onSelectSpecId('e09aff7fb734')}
           className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
-            currentSpecId === 'b1e0205a4909'
+            currentSpecId === 'e09aff7fb734'
               ? 'bg-[#18181b] text-white shadow-xs'
               : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
           }`}
         >
-          b1e0205a4909 (Dual-Wallet Locked)
+          e09aff7fb734 (Demo 1 Suite-Bound)
         </button>
 
-        <button
-          onClick={() => onSelectSpecId('0b60bff5d312')}
-          className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
-            currentSpecId === '0b60bff5d312'
-              ? 'bg-[#18181b] text-white shadow-xs'
-              : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
-          }`}
-        >
-          0b60bff5d312 (Walkthrough Case)
-        </button>
-
-        <button
-          onClick={() => onSelectSpecId(DEFAULT_SPEC_ID)}
-          className={`px-3 py-1.5 rounded-lg font-mono font-medium transition-all cursor-pointer ${
-            currentSpecId === DEFAULT_SPEC_ID
-              ? 'bg-[#18181b] text-white shadow-xs'
-              : 'bg-white border border-[#e7e5e0] text-[#52525b] hover:border-[#a1a1aa]'
-          }`}
-        >
-          {DEFAULT_SPEC_ID} (Baseline Demo)
-        </button>
-
-        {currentSpecId !== DEFAULT_SPEC_ID && currentSpecId !== '0b60bff5d312' && currentSpecId !== 'b1e0205a4909' && currentSpecId !== 'a003a9db5998' && currentSpecId !== 'b38ab2fac8a8' && (
+        {currentSpecId !== '54bd67a9b46c' && currentSpecId !== 'dec354a729a0' && currentSpecId !== 'e09aff7fb734' && (
           <span className="px-3 py-1.5 bg-[#18181b] text-white rounded-lg font-mono font-medium shadow-xs">
             {currentSpecId} (Active)
           </span>
@@ -265,7 +243,7 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
 
         {/* Try Demo 3 button — negative example with ambiguous clause */}
         <button
-          onClick={() => onSelectSpecId('b38ab2fac8a8')}
+          onClick={() => onSelectSpecId('54bd67a9b46c')}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 text-red-800 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-md font-medium transition-colors shadow-2xs cursor-pointer"
           title="View Demo 3: Ambiguous clause where Lock is blocked by red scenarios"
         >
@@ -372,12 +350,12 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
                   <button
                     type="button"
                     onClick={() => {
-                      onSelectSpecId('b1e0205a4909')
+                      onSelectSpecId('e09aff7fb734')
                       setShowCreateModal(false)
                     }}
                     className="text-amber-800 underline font-medium hover:text-amber-950 cursor-pointer"
                   >
-                    Load Dual-Signed Demo 1 (b1e0205a4909) &rarr;
+                    Load Dual-Signed Demo 1 (e09aff7fb734) &rarr;
                   </button>
                 </div>
               </div>
@@ -396,12 +374,12 @@ export const SpecSelector: React.FC<SpecSelectorProps> = ({ currentSpecId, onSel
                   <button
                     type="button"
                     onClick={() => {
-                      onSelectSpecId('a003a9db5998')
+                      onSelectSpecId('dec354a729a0')
                       setShowCreateModal(false)
                     }}
                     className="text-sky-800 underline font-medium hover:text-sky-950 cursor-pointer"
                   >
-                    Load Locked & Adjudicated Demo 2 (a003a9db5998) &rarr;
+                    Load Locked & Adjudicated Demo 2 (dec354a729a0) &rarr;
                   </button>
                 </div>
               </div>
