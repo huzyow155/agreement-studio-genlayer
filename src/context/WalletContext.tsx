@@ -105,10 +105,13 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   }, [])
 
   const closeChooser = useCallback(() => {
-    if (walletState === 'CHOOSER_OPEN') {
-      setWalletState(account ? 'CONNECTED' : 'DISCONNECTED')
-    }
-  }, [walletState, account])
+    setWalletState((prev) => {
+      if (prev === 'CHOOSER_OPEN') {
+        return account ? 'CONNECTED' : 'DISCONNECTED'
+      }
+      return prev
+    })
+  }, [account])
 
   const disconnectWallet = useCallback(() => {
     setSelectedWallet(null)

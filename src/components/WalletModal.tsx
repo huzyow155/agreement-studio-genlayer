@@ -69,7 +69,6 @@ export const WalletModal: React.FC = () => {
                   key={wallet.info.uuid || wallet.info.rdns}
                   onClick={async () => {
                     await connectWallet(wallet)
-                    closeChooser()
                   }}
                   className={`w-full flex items-center justify-between p-3.5 border rounded-lg transition-all group text-left cursor-pointer ${
                     isCurrent
