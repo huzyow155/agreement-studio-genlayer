@@ -63,7 +63,9 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
   const pendingParties = spec.parties.filter((p) => !hasSignedCurrent(p))
   const allPartiesSigned = spec.parties.length > 0 && pendingParties.length === 0
   const noRedScenarios = suiteReport ? suiteReport.red_scenarios.length === 0 && suiteReport.green_scenarios.length >= 4 : true
-  const readyToLock = Boolean(suiteReport?.ready_to_lock && allPartiesSigned && noRedScenarios)
+  const readyToLock = suiteReport
+    ? Boolean(suiteReport.ready_to_lock && allPartiesSigned && noRedScenarios)
+    : Boolean(allPartiesSigned && noRedScenarios && activeSuiteDigest)
 
   const needsSwitchToOtherParty =
     !isLocked &&

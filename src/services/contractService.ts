@@ -44,18 +44,21 @@ export async function fetchSpec(specId: string): Promise<SpecRecord | null> {
 }
 
 export async function fetchScenario(specId: string, n: number): Promise<ScenarioRecord | null> {
-  try {
-    const raw: any = await publicClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'get_scenario',
-      args: [specId, n],
-    })
-    if (!raw || raw === '{}') return null
-    return typeof raw === 'string' ? JSON.parse(raw) : (raw as ScenarioRecord)
-  } catch (err) {
-    console.error(`fetchScenario ${n} error:`, err)
-    return null
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const raw: any = await publicClient.readContract({
+        address: CONTRACT_ADDRESS,
+        functionName: 'get_scenario',
+        args: [specId, n],
+      })
+      if (!raw || raw === '{}') return null
+      return typeof raw === 'string' ? JSON.parse(raw) : (raw as ScenarioRecord)
+    } catch (err) {
+      if (attempt === 3) console.error(`fetchScenario ${n} error:`, err)
+      await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+    }
   }
+  return null
 }
 
 export async function fetchSuiteReport(specId: string): Promise<SuiteReport | null> {

@@ -102,14 +102,18 @@ export const App: React.FC = () => {
         ])
 
         const scList = scResults.filter(Boolean) as ScenarioRecord[]
-        setScenarios(scList)
-        setSuiteReport(rep)
-        const activeDigest = liveDigest || rep?.scenario_suite_digest || null
-        setCurrentDigest(activeDigest)
-        if (activeDigest) {
-          loadedSpec.scenario_suite_digest = activeDigest
-          setSpec({ ...loadedSpec })
+        if (scList.length > 0) {
+          setScenarios(scList)
         }
+        if (rep) {
+          setSuiteReport(rep)
+        }
+        const activeDigest = liveDigest || rep?.scenario_suite_digest || currentDigest
+        if (activeDigest) {
+          setCurrentDigest(activeDigest)
+          loadedSpec.scenario_suite_digest = activeDigest
+        }
+        setSpec({ ...loadedSpec })
 
         // Load facts
         const factsId = latestFactsId || DEFAULT_FACTS_ID
