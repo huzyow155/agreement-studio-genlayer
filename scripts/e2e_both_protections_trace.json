@@ -1,0 +1,41 @@
+{
+  "contract": "0x13ac18867642fdCd740EA14c6EA7588abdCb7F73",
+  "timestamp": "2026-10-04T02:41:48.550Z",
+  "partyA": "0x84FE184B3A0b982b39eAd944236CFa4dD22114F7",
+  "partyB": "0x78F7530B9ef9f0ab28e3BB208fFf4c111d378FC6",
+  "steps": [
+    {
+      "name": "create_spec",
+      "tx": "0xcb3f5d1d6fb6a45c23aac608c8b210ebcc00a5e2922119c26411f52cfc53ea4a",
+      "specId": "2578cb678f69"
+    },
+    {
+      "name": "invite",
+      "tx": "0x28cde5b7c38151143b8cba537506c50563fcfd01cc8422dc3193ad347b4ddc1a"
+    },
+    {
+      "name": "initial_signatures",
+      "txA": "0x4f62086fe3c040802731a0aa8a88ab27aa19b8649cff7aefcfe9963c6242a8e0",
+      "txB": "0xc3ec8d075a568c8cc0a437cb04f1313a2c35161972c3f6d0704235ce7f28a572",
+      "suiteDigest": "c0c9cdebc4237e32a241993d9a97155ea0fb920e0e9a02a92b373c535c1f3a7b"
+    },
+    {
+      "name": "lock_blocked_after_suite_change",
+      "success": false,
+      "error": ""
+    },
+    {
+      "name": "lock_succeeded",
+      "tx": "0x86f43a64d9bdd24e00ac3446fc76df483f8bb6df8525c66ebd2c6c062ab7b7ad",
+      "specHash": "9366b5452dce7e2443d88e63cf3d104cf86a0e07156d2b7a78ad55a5c309c814"
+    },
+    {
+      "name": "restipulation_rejected_confirmations_preserved",
+      "success": false
+    },
+    {
+      "name": "readjudication_rejected_ruling_preserved",
+      "success": false
+    }
+  ]
+}

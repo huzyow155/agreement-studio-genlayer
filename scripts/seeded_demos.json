@@ -1,0 +1,37 @@
+{
+  "contract": "0x13ac18867642fdCd740EA14c6EA7588abdCb7F73",
+  "timestamp": "2026-10-04T02:35:53.075Z",
+  "demo2": {
+    "title": "Cloud Service Level Agreement (SLA)",
+    "spec_id": "dec354a729a0",
+    "facts_id": "8bd58a210074",
+    "status": "LOCKED",
+    "spec_hash": "ae27c70be11d596ff3f63bfe0489d973aeb28142702648229d2d21458401da30",
+    "ruling": {
+      "canary_pass": true,
+      "facts_id": "8bd58a210074",
+      "schema_version": "1.0",
+      "spec_hash": "ae27c70be11d596ff3f63bfe0489d973aeb28142702648229d2d21458401da30",
+      "spec_id": "dec354a729a0",
+      "verdict": "COMPLIANT"
+    }
+  },
+  "demo3": {
+    "title": "Consulting Deliverable Quality Agreement",
+    "spec_id": "54bd67a9b46c",
+    "status": "DRAFT",
+    "ready_to_lock": false,
+    "red_scenarios": [
+      2,
+      3,
+      4
+    ],
+    "lock_problems": [
+      "party has not signed: 0x33acF62Da3e226e6026c04B766B8c656868929D5",
+      "party has not signed: 0x608Efd731EFc61AA53E3f420cEF2B89391CF5020",
+      "scenario 2 is red",
+      "scenario 3 is red",
+      "scenario 4 is red"
+    ]
+  }
+}
