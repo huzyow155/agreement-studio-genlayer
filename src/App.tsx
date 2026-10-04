@@ -17,6 +17,7 @@ import {
   fetchSpec,
   fetchScenario,
   fetchSuiteReport,
+  fetchScenarioSuiteDigest,
   fetchFacts,
   fetchRuling,
   fetchLatestFactsId
@@ -70,6 +71,7 @@ export const App: React.FC = () => {
   const [spec, setSpec] = useState<SpecRecord | null>(null)
   const [scenarios, setScenarios] = useState<ScenarioRecord[]>([])
   const [suiteReport, setSuiteReport] = useState<SuiteReport | null>(null)
+  const [currentDigest, setCurrentDigest] = useState<string | null>(null)
   const [facts, setFacts] = useState<FactsRecord | null>(null)
   const [ruling, setRuling] = useState<RulingRecord | null>(null)
 
@@ -86,23 +88,26 @@ export const App: React.FC = () => {
 
       if (loadedSpec) {
         setSpec(loadedSpec)
-        // Load all scenarios, suite report, and latest facts in parallel
+        // Load all scenarios, suite report, latest facts, and live suite digest in parallel
         const scPromises = []
         for (let i = 1; i <= loadedSpec.n_scenarios; i++) {
           scPromises.push(fetchScenario(specId, i))
         }
 
-        const [scResults, rep, latestFactsId] = await Promise.all([
+        const [scResults, rep, latestFactsId, liveDigest] = await Promise.all([
           Promise.all(scPromises),
           fetchSuiteReport(specId),
           fetchLatestFactsId(specId),
+          fetchScenarioSuiteDigest(specId),
         ])
 
         const scList = scResults.filter(Boolean) as ScenarioRecord[]
         setScenarios(scList)
         setSuiteReport(rep)
-        if (rep?.scenario_suite_digest) {
-          loadedSpec.scenario_suite_digest = rep.scenario_suite_digest
+        const activeDigest = liveDigest || rep?.scenario_suite_digest || null
+        setCurrentDigest(activeDigest)
+        if (activeDigest) {
+          loadedSpec.scenario_suite_digest = activeDigest
           setSpec({ ...loadedSpec })
         }
 
@@ -168,6 +173,16 @@ export const App: React.FC = () => {
       window.history.replaceState(null, '', url.toString())
     }
   }
+
+  const handleSpecUpdated = useCallback((updated: SpecRecord) => {
+    setSpec((prev) => {
+      const active = currentDigest || prev?.scenario_suite_digest
+      return {
+        ...updated,
+        ...(active ? { scenario_suite_digest: active } : {})
+      }
+    })
+  }, [currentDigest])
 
   const isLocked = spec?.status === 'LOCKED'
   const hasConfirmedFacts = (facts?.by?.length || 0) >= 2
@@ -256,7 +271,8 @@ export const App: React.FC = () => {
             {/* Spec Overview (Clause, Parties, Signatures) */}
             <SpecOverview
               spec={spec}
-              onSpecUpdated={(updated) => setSpec(updated)}
+              currentDigest={currentDigest}
+              onSpecUpdated={handleSpecUpdated}
             />
 
             {/* Stage 1 & 2: Adversarial Scenarios Matrix & Pre-Signing Gate */}
@@ -266,19 +282,36 @@ export const App: React.FC = () => {
                   spec={spec}
                   scenarios={scenarios}
                   suiteReport={suiteReport}
-                  onScenarioAdded={(newSc) => setScenarios((prev) => [...prev, newSc])}
-                  onScenarioUpdated={(upSc) =>
+                  onScenarioAdded={async (newSc) => {
+                    setScenarios((prev) => [...prev, newSc])
+                    await loadSpecData(currentSpecId)
+                  }}
+                  onScenarioUpdated={async (upSc) => {
                     setScenarios((prev) => prev.map((s) => (s.n === upSc.n ? upSc : s)))
-                  }
-                  onSuiteReportUpdated={(rep) => setSuiteReport(rep)}
+                    await loadSpecData(currentSpecId)
+                  }}
+                  onSuiteReportUpdated={(rep) => {
+                    setSuiteReport(rep)
+                    if (rep.scenario_suite_digest) {
+                      setCurrentDigest(rep.scenario_suite_digest)
+                      setSpec((prev) => prev ? { ...prev, scenario_suite_digest: rep.scenario_suite_digest } : null)
+                    }
+                  }}
                   onSpecReload={() => loadSpecData(currentSpecId)}
                 />
 
                 <LockingSection
                   spec={spec}
                   suiteReport={suiteReport}
-                  onSpecUpdated={(updated) => setSpec(updated)}
-                  onSuiteReportUpdated={(rep) => setSuiteReport(rep)}
+                  currentDigest={currentDigest}
+                  onSpecUpdated={handleSpecUpdated}
+                  onSuiteReportUpdated={(rep) => {
+                    setSuiteReport(rep)
+                    if (rep.scenario_suite_digest) {
+                      setCurrentDigest(rep.scenario_suite_digest)
+                      setSpec((prev) => prev ? { ...prev, scenario_suite_digest: rep.scenario_suite_digest } : null)
+                    }
+                  }}
                   onReload={() => loadSpecData(currentSpecId)}
                 />
               </>

@@ -20,7 +20,7 @@ async function runDemo2() {
   console.log('       DEMO 2 SPEC: CLOUD SERVICE LEVEL AGREEMENT (SLA)         ');
   console.log('================================================================');
 
-  const CONTRACT_ADDRESS = '0xf227D68595178A2192888c85E3550fEff4b79406';
+  const CONTRACT_ADDRESS = '0x13ac18867642fdCd740EA14c6EA7588abdCb7F73';
 
   const partyA = createAccount();
   const partyB = createAccount();

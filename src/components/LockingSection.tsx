@@ -2,12 +2,13 @@ import React from 'react'
 import type { SpecRecord, SuiteReport } from '../types/contract'
 import { useWallet } from '../context/WalletContext'
 import { useTransaction } from '../context/TransactionContext'
-import { submitSign, submitLock, getWriteClient, fetchSpec, fetchSuiteReport } from '../services/contractService'
+import { submitSign, submitLock, getWriteClient, fetchSpec, fetchSuiteReport, fetchScenarioSuiteDigest } from '../services/contractService'
 import { PenTool, Lock, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react'
 
 interface LockingSectionProps {
   spec: SpecRecord
   suiteReport: SuiteReport | null
+  currentDigest?: string | null
   onSpecUpdated: (spec: SpecRecord) => void
   onSuiteReportUpdated?: (suiteReport: SuiteReport) => void
   onReload?: () => void
@@ -16,6 +17,7 @@ interface LockingSectionProps {
 export const LockingSection: React.FC<LockingSectionProps> = ({
   spec,
   suiteReport,
+  currentDigest,
   onSpecUpdated,
   onSuiteReportUpdated,
   onReload,
@@ -25,6 +27,8 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
 
   const isLocked = spec.status === 'LOCKED'
   const isParty = account && spec.parties.some((p) => p.toLowerCase() === account.toLowerCase())
+
+  const activeSuiteDigest = currentDigest || suiteReport?.scenario_suite_digest || spec.scenario_suite_digest || null
 
   const getPartyDigest = (p: string): string | null => {
     if (!spec.signed || Array.isArray(spec.signed)) return null
@@ -40,20 +44,17 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
     return Object.keys(spec.signed).some((k) => k.toLowerCase() === p.toLowerCase())
   }
 
-  const currentDigest = suiteReport?.scenario_suite_digest || spec.scenario_suite_digest
-
   const hasSignedCurrent = (p: string): boolean => {
     if (!hasSignedAny(p)) return false
-    if (currentDigest && !Array.isArray(spec.signed)) {
-      const digest = getPartyDigest(p)
-      if (digest && digest === currentDigest) return true
+    const digest = getPartyDigest(p)
+    if (activeSuiteDigest) {
+      return Boolean(digest && digest === activeSuiteDigest)
     }
     if (suiteReport?.lock_problems?.some((prob) => prob.toLowerCase().includes(p.toLowerCase()) && prob.includes('must re-sign'))) {
       return false
     }
-    if (!currentDigest || Array.isArray(spec.signed)) return true
-    const digest = getPartyDigest(p)
-    return digest === currentDigest
+    if (spec.n_scenarios === 0) return true
+    return false
   }
 
   const userSignedCurrent = Boolean(account && isParty && hasSignedCurrent(account))
@@ -62,7 +63,7 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
   const pendingParties = spec.parties.filter((p) => !hasSignedCurrent(p))
   const allPartiesSigned = spec.parties.length > 0 && pendingParties.length === 0
   const noRedScenarios = suiteReport ? suiteReport.red_scenarios.length === 0 && suiteReport.green_scenarios.length >= 4 : true
-  const readyToLock = (suiteReport?.ready_to_lock === true) || (allPartiesSigned && noRedScenarios)
+  const readyToLock = Boolean(suiteReport?.ready_to_lock && allPartiesSigned && noRedScenarios)
 
   const needsSwitchToOtherParty =
     !isLocked &&
@@ -83,22 +84,27 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
       userNeedsResign ? `Re-Sign Agreement Suite (v${spec.version})` : `Sign Agreement (v${spec.version})`,
       () => submitSign(client, spec.spec_id),
       async () => {
-        const [updated, rep] = await Promise.all([
+        const [updated, rep, liveDigest] = await Promise.all([
           fetchSpec(spec.spec_id),
-          fetchSuiteReport(spec.spec_id)
+          fetchSuiteReport(spec.spec_id),
+          fetchScenarioSuiteDigest(spec.spec_id),
         ])
         if (updated) {
-          const targetDigest = rep?.scenario_suite_digest || updated.scenario_suite_digest
+          const targetDigest = liveDigest || rep?.scenario_suite_digest || updated.scenario_suite_digest
           const signedMap = updated.signed || {}
           const userKey = Object.keys(signedMap).find((k) => k.toLowerCase() === account.toLowerCase())
           const userDigest = userKey ? (signedMap as any)[userKey] : null
           const signedCurrent = targetDigest ? userDigest === targetDigest : !!userKey
 
           if (signedCurrent) {
+            if (targetDigest) {
+              updated.scenario_suite_digest = targetDigest
+            }
             onSpecUpdated(updated)
             if (rep && onSuiteReportUpdated) {
               onSuiteReportUpdated(rep)
             }
+            if (onReload) onReload()
             return true
           }
         }
@@ -298,6 +304,64 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
           </div>
         </div>
       )}
+
+      {/* Scenario Suite Digest & Counterparty Signature Binding Transparency */}
+      <div className="p-4 bg-[#faf9f5] border border-[#e7e5e0] rounded-xl space-y-3 text-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-[#e7e5e0] pb-2.5">
+          <div className="flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-[#18181b]" />
+            <span className="font-semibold text-[#18181b]">Scenario Suite Binding Digest:</span>
+          </div>
+          <span className="font-mono text-[11px] font-medium text-[#18181b] bg-white px-2.5 py-1 rounded border border-[#e4e4e7] truncate max-w-full sm:max-w-xs" title={activeSuiteDigest || ''}>
+            {activeSuiteDigest ? activeSuiteDigest : 'Computing on-chain digest...'}
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {spec.parties.map((p, idx) => {
+            const digest = getPartyDigest(p)
+            const isSignedCurrent = hasSignedCurrent(p)
+            const hasSigned = hasSignedAny(p)
+            const isMe = account && account.toLowerCase() === p.toLowerCase()
+            return (
+              <div key={p} className="p-2.5 bg-white border border-[#e7e5e0] rounded-lg space-y-1.5">
+                <div className="flex items-center justify-between text-[11px]">
+                  <div className="flex items-center gap-1.5 truncate">
+                    <span className="font-mono font-medium text-[#18181b]">
+                      Party {idx === 0 ? 'A' : 'B'} ({short(p)})
+                    </span>
+                    {isMe && (
+                      <span className="text-[9px] font-sans px-1 py-0.2 rounded bg-[#18181b] text-white">
+                        You
+                      </span>
+                    )}
+                  </div>
+                  {isSignedCurrent ? (
+                    <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" />
+                      Matches Suite
+                    </span>
+                  ) : hasSigned ? (
+                    <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                      <AlertTriangle className="w-3 h-3" />
+                      Stale (Re-sign)
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-[#71717a] bg-[#f4f4f5] px-2 py-0.5 rounded-full font-medium">
+                      Unsigned
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] font-mono text-[#71717a] flex items-center justify-between border-t border-[#f4f4f5] pt-1">
+                  <span className="text-[10px] uppercase font-sans text-[#a1a1aa]">Stored:</span>
+                  <span className={isSignedCurrent ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
+                    {digest ? `${digest.slice(0, 10)}...${digest.slice(-6)}` : 'None'}
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-[#faf9f5] border border-[#e7e5e0] rounded-xl">
         {/* Sign Status */}

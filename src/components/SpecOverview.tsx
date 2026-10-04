@@ -3,14 +3,15 @@ import type { SpecRecord } from '../types/contract'
 import { useWallet } from '../context/WalletContext'
 import { useTransaction } from '../context/TransactionContext'
 import { submitInvite, submitAmendClause, getWriteClient, fetchSpec } from '../services/contractService'
-import { Lock, UserPlus, Edit3, ShieldCheck, Check, Copy } from 'lucide-react'
+import { Lock, UserPlus, Edit3, ShieldCheck, Check, Copy, AlertTriangle } from 'lucide-react'
 
 interface SpecOverviewProps {
   spec: SpecRecord
+  currentDigest?: string | null
   onSpecUpdated: (spec: SpecRecord) => void
 }
 
-export const SpecOverview: React.FC<SpecOverviewProps> = ({ spec, onSpecUpdated }) => {
+export const SpecOverview: React.FC<SpecOverviewProps> = ({ spec, currentDigest, onSpecUpdated }) => {
   const { account, selectedWallet } = useWallet()
   const { executeTransaction, isBusy } = useTransaction()
 
@@ -231,7 +232,15 @@ export const SpecOverview: React.FC<SpecOverviewProps> = ({ spec, onSpecUpdated 
               ? Object.entries(spec.signed).find(([k]) => k.toLowerCase() === p.toLowerCase())?.[1]
               : null
 
-            const isCurrentDigest = isLocked || !spec.scenario_suite_digest || !signedDigest || signedDigest === spec.scenario_suite_digest
+            const effectiveCurrentDigest = currentDigest || spec.scenario_suite_digest || null
+
+            // If locked, signatures are frozen and final
+            // Otherwise, signature is current ONLY if signedDigest matches effectiveCurrentDigest
+            const isCurrentDigest = isLocked
+              ? true
+              : effectiveCurrentDigest
+              ? Boolean(signedDigest && signedDigest === effectiveCurrentDigest)
+              : spec.n_scenarios === 0 && hasSignedAny
 
             const isMe = account && account.toLowerCase() === p.toLowerCase()
             const isSpecAuthor = p.toLowerCase() === spec.author.toLowerCase()
@@ -239,37 +248,50 @@ export const SpecOverview: React.FC<SpecOverviewProps> = ({ spec, onSpecUpdated 
             return (
               <div
                 key={p}
-                className="p-3 border border-[#e7e5e0] rounded-lg bg-white flex items-center justify-between text-xs font-mono"
+                className="p-3 border border-[#e7e5e0] rounded-lg bg-white flex flex-col gap-2 text-xs font-mono"
               >
-                <div className="flex items-center gap-2 truncate">
-                  <span className="text-[#18181b] font-medium">{short(p)}</span>
-                  {isMe && (
-                    <span className="text-[10px] font-sans px-1.5 py-0.2 rounded bg-[#18181b] text-white font-medium">
-                      You
-                    </span>
-                  )}
-                  {isSpecAuthor && (
-                    <span className="text-[10px] font-sans px-1.5 py-0.2 rounded bg-[#f4f4f5] text-[#71717a]">
-                      Author
-                    </span>
-                  )}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 truncate">
+                    <span className="text-[#18181b] font-medium">{short(p)}</span>
+                    {isMe && (
+                      <span className="text-[10px] font-sans px-1.5 py-0.2 rounded bg-[#18181b] text-white font-medium">
+                        You
+                      </span>
+                    )}
+                    {isSpecAuthor && (
+                      <span className="text-[10px] font-sans px-1.5 py-0.2 rounded bg-[#f4f4f5] text-[#71717a]">
+                        Author
+                      </span>
+                    )}
+                  </div>
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    {hasSignedAny && isCurrentDigest ? (
+                      <span className="text-[11px] font-sans text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                        <Check className="w-3 h-3" />
+                        {isLocked ? 'Signed & Locked' : `Signed v${spec.version}`}
+                      </span>
+                    ) : hasSignedAny && !isCurrentDigest ? (
+                      <span className="text-[11px] font-sans text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                        <AlertTriangle className="w-3 h-3 text-amber-600" />
+                        Re-signature required (suite modified)
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-sans text-[#71717a] bg-[#f4f4f5] px-2 py-0.5 rounded-full">
+                        Not Signed
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="shrink-0 flex items-center gap-1.5">
-                  {hasSignedAny && isCurrentDigest ? (
-                    <span className="text-[11px] font-sans text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                      <Check className="w-3 h-3" />
-                      Signed v{spec.version}
+
+                {/* Stored Signature Digest info for full transparency */}
+                {signedDigest && (
+                  <div className="text-[11px] text-[#71717a] flex items-center justify-between border-t border-[#f4f4f5] pt-1.5 font-mono">
+                    <span className="text-[10px] uppercase font-sans text-[#a1a1aa]">Signed Suite Digest:</span>
+                    <span className={signedDigest === effectiveCurrentDigest ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
+                      {signedDigest.slice(0, 8)}...{signedDigest.slice(-6)}
                     </span>
-                  ) : hasSignedAny && !isCurrentDigest ? (
-                    <span className="text-[11px] font-sans text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-                      Re-sign Needed
-                    </span>
-                  ) : (
-                    <span className="text-[11px] font-sans text-[#71717a] bg-[#f4f4f5] px-2 py-0.5 rounded-full">
-                      Not Signed
-                    </span>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )
           })}

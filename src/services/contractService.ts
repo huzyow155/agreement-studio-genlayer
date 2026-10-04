@@ -76,6 +76,25 @@ export async function fetchSuiteReport(specId: string): Promise<SuiteReport | nu
   return null
 }
 
+export async function fetchScenarioSuiteDigest(specId: string): Promise<string | null> {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const raw: any = await publicClient.readContract({
+        address: CONTRACT_ADDRESS,
+        functionName: 'get_scenario_suite_digest',
+        args: [specId],
+      })
+      if (!raw || raw === '""' || raw === '') return null
+      const str = typeof raw === 'string' ? raw.replace(/^"|"$/g, '') : String(raw)
+      return str || null
+    } catch (err) {
+      if (attempt === 2) console.error('fetchScenarioSuiteDigest error:', err)
+      await new Promise((r) => setTimeout(r, 600))
+    }
+  }
+  return null
+}
+
 export async function fetchFacts(specId: string, factsId: string): Promise<FactsRecord | null> {
   try {
     const raw: any = await publicClient.readContract({
