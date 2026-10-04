@@ -37,6 +37,7 @@ export interface SuiteReport {
   label_distribution: Record<string, number>
   ready_to_lock: boolean
   lock_problems: string[]
+  scenario_suite_digest?: string
 }
 
 export interface FactsRecord {

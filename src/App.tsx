@@ -23,7 +23,6 @@ import {
 } from './services/contractService'
 import type { SpecRecord, ScenarioRecord, SuiteReport, FactsRecord, RulingRecord } from './types/contract'
 import { DEFAULT_SPEC_ID, DEFAULT_FACTS_ID, CONTRACT_ADDRESS, STUDIONET_EXPLORER_URL } from './config/chain'
-import { useWallet } from './context/WalletContext'
 import { Loader2, RefreshCw, ExternalLink, ChevronDown, ChevronRight, Shield, Layers } from 'lucide-react'
 
 // Downstream consumer contract address
@@ -79,17 +78,14 @@ export const App: React.FC = () => {
   const [showHowItWorks, setShowHowItWorks] = useState<boolean>(false)
   const [showTechnicalDetails, setShowTechnicalDetails] = useState<boolean>(false)
 
-  // Track connected account so spec data reloads when wallet switches
-  const { account: connectedAccount } = useWallet()
-
   // Load complete spec state from contract
   const loadSpecData = useCallback(async (specId: string) => {
     setIsLoading(true)
     try {
       const loadedSpec = await fetchSpec(specId)
-      setSpec(loadedSpec)
 
       if (loadedSpec) {
+        setSpec(loadedSpec)
         // Load all scenarios, suite report, and latest facts in parallel
         const scPromises = []
         for (let i = 1; i <= loadedSpec.n_scenarios; i++) {
@@ -105,6 +101,10 @@ export const App: React.FC = () => {
         const scList = scResults.filter(Boolean) as ScenarioRecord[]
         setScenarios(scList)
         setSuiteReport(rep)
+        if (rep?.scenario_suite_digest) {
+          loadedSpec.scenario_suite_digest = rep.scenario_suite_digest
+          setSpec({ ...loadedSpec })
+        }
 
         // Load facts
         const factsId = latestFactsId || DEFAULT_FACTS_ID
@@ -135,10 +135,16 @@ export const App: React.FC = () => {
           }
         }
       } else {
-        setScenarios([])
-        setSuiteReport(null)
-        setFacts(null)
-        setRuling(null)
+        setSpec((prev) => {
+          if (!prev || prev.spec_id !== specId) {
+            setScenarios([])
+            setSuiteReport(null)
+            setFacts(null)
+            setRuling(null)
+            return null
+          }
+          return prev
+        })
       }
     } catch (err) {
       console.error('Error loading spec data:', err)
@@ -147,12 +153,12 @@ export const App: React.FC = () => {
     }
   }, [])
 
-  // Reload spec data when route, spec ID, or connected wallet changes
+  // Reload spec data when route or spec ID changes
   useEffect(() => {
     if (currentRoute === '/app') {
       loadSpecData(currentSpecId)
     }
-  }, [currentRoute, currentSpecId, connectedAccount, loadSpecData])
+  }, [currentRoute, currentSpecId, loadSpecData])
 
   const handleSelectSpecId = (newId: string) => {
     setCurrentSpecId(newId)
@@ -272,6 +278,8 @@ export const App: React.FC = () => {
                   spec={spec}
                   suiteReport={suiteReport}
                   onSpecUpdated={(updated) => setSpec(updated)}
+                  onSuiteReportUpdated={(rep) => setSuiteReport(rep)}
+                  onReload={() => loadSpecData(currentSpecId)}
                 />
               </>
             )}

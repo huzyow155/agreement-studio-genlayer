@@ -2,19 +2,23 @@ import React from 'react'
 import type { SpecRecord, SuiteReport } from '../types/contract'
 import { useWallet } from '../context/WalletContext'
 import { useTransaction } from '../context/TransactionContext'
-import { submitSign, submitLock, getWriteClient, fetchSpec } from '../services/contractService'
+import { submitSign, submitLock, getWriteClient, fetchSpec, fetchSuiteReport } from '../services/contractService'
 import { PenTool, Lock, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react'
 
 interface LockingSectionProps {
   spec: SpecRecord
   suiteReport: SuiteReport | null
   onSpecUpdated: (spec: SpecRecord) => void
+  onSuiteReportUpdated?: (suiteReport: SuiteReport) => void
+  onReload?: () => void
 }
 
 export const LockingSection: React.FC<LockingSectionProps> = ({
   spec,
   suiteReport,
   onSpecUpdated,
+  onSuiteReportUpdated,
+  onReload,
 }) => {
   const { account, selectedWallet, requestAccountSwitch, openChooser } = useWallet()
   const { executeTransaction, isBusy } = useTransaction()
@@ -36,17 +40,29 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
     return Object.keys(spec.signed).some((k) => k.toLowerCase() === p.toLowerCase())
   }
 
+  const currentDigest = suiteReport?.scenario_suite_digest || spec.scenario_suite_digest
+
   const hasSignedCurrent = (p: string): boolean => {
     if (!hasSignedAny(p)) return false
-    if (!spec.scenario_suite_digest || Array.isArray(spec.signed)) return true
+    if (currentDigest && !Array.isArray(spec.signed)) {
+      const digest = getPartyDigest(p)
+      if (digest && digest === currentDigest) return true
+    }
+    if (suiteReport?.lock_problems?.some((prob) => prob.toLowerCase().includes(p.toLowerCase()) && prob.includes('must re-sign'))) {
+      return false
+    }
+    if (!currentDigest || Array.isArray(spec.signed)) return true
     const digest = getPartyDigest(p)
-    return digest === spec.scenario_suite_digest
+    return digest === currentDigest
   }
 
   const userSignedCurrent = Boolean(account && isParty && hasSignedCurrent(account))
   const userNeedsResign = Boolean(account && isParty && hasSignedAny(account) && !userSignedCurrent)
 
   const pendingParties = spec.parties.filter((p) => !hasSignedCurrent(p))
+  const allPartiesSigned = spec.parties.length > 0 && pendingParties.length === 0
+  const noRedScenarios = suiteReport ? suiteReport.red_scenarios.length === 0 && suiteReport.green_scenarios.length >= 4 : true
+  const readyToLock = (suiteReport?.ready_to_lock === true) || (allPartiesSigned && noRedScenarios)
 
   const needsSwitchToOtherParty =
     !isLocked &&
@@ -59,8 +75,6 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
 
   const short = (addr?: string | null) => (addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : '')
 
-  const readyToLock = suiteReport?.ready_to_lock === true
-
   const handleSign = async () => {
     if (!account || !selectedWallet) return
 
@@ -69,10 +83,24 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
       userNeedsResign ? `Re-Sign Agreement Suite (v${spec.version})` : `Sign Agreement (v${spec.version})`,
       () => submitSign(client, spec.spec_id),
       async () => {
-        const updated = await fetchSpec(spec.spec_id)
-        if (updated && hasSignedAny(account)) {
-          onSpecUpdated(updated)
-          return true
+        const [updated, rep] = await Promise.all([
+          fetchSpec(spec.spec_id),
+          fetchSuiteReport(spec.spec_id)
+        ])
+        if (updated) {
+          const targetDigest = rep?.scenario_suite_digest || updated.scenario_suite_digest
+          const signedMap = updated.signed || {}
+          const userKey = Object.keys(signedMap).find((k) => k.toLowerCase() === account.toLowerCase())
+          const userDigest = userKey ? (signedMap as any)[userKey] : null
+          const signedCurrent = targetDigest ? userDigest === targetDigest : !!userKey
+
+          if (signedCurrent) {
+            onSpecUpdated(updated)
+            if (rep && onSuiteReportUpdated) {
+              onSuiteReportUpdated(rep)
+            }
+            return true
+          }
         }
         return false
       },
@@ -91,6 +119,7 @@ export const LockingSection: React.FC<LockingSectionProps> = ({
         const updated = await fetchSpec(spec.spec_id)
         if (updated && updated.status === 'LOCKED' && updated.spec_hash) {
           onSpecUpdated(updated)
+          if (onReload) onReload()
           return true
         }
         return false

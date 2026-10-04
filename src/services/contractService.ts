@@ -26,18 +26,21 @@ export function getWriteClient(account: string, provider: any) {
 // ---------------------------------------------------------------------------
 
 export async function fetchSpec(specId: string): Promise<SpecRecord | null> {
-  try {
-    const raw: any = await publicClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'get_spec',
-      args: [specId],
-    })
-    if (!raw || raw === '{}') return null
-    return typeof raw === 'string' ? JSON.parse(raw) : (raw as SpecRecord)
-  } catch (err) {
-    console.error('fetchSpec error:', err)
-    return null
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const raw: any = await publicClient.readContract({
+        address: CONTRACT_ADDRESS,
+        functionName: 'get_spec',
+        args: [specId],
+      })
+      if (!raw || raw === '{}') return null
+      return typeof raw === 'string' ? JSON.parse(raw) : (raw as SpecRecord)
+    } catch (err) {
+      if (attempt === 2) console.error('fetchSpec error:', err)
+      await new Promise((r) => setTimeout(r, 600))
+    }
   }
+  return null
 }
 
 export async function fetchScenario(specId: string, n: number): Promise<ScenarioRecord | null> {
@@ -56,18 +59,21 @@ export async function fetchScenario(specId: string, n: number): Promise<Scenario
 }
 
 export async function fetchSuiteReport(specId: string): Promise<SuiteReport | null> {
-  try {
-    const raw: any = await publicClient.readContract({
-      address: CONTRACT_ADDRESS,
-      functionName: 'suite_report',
-      args: [specId],
-    })
-    if (!raw || raw === '{}') return null
-    return typeof raw === 'string' ? JSON.parse(raw) : (raw as SuiteReport)
-  } catch (err) {
-    console.error('fetchSuiteReport error:', err)
-    return null
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const raw: any = await publicClient.readContract({
+        address: CONTRACT_ADDRESS,
+        functionName: 'suite_report',
+        args: [specId],
+      })
+      if (!raw || raw === '{}') return null
+      return typeof raw === 'string' ? JSON.parse(raw) : (raw as SuiteReport)
+    } catch (err) {
+      if (attempt === 2) console.error('fetchSuiteReport error:', err)
+      await new Promise((r) => setTimeout(r, 600))
+    }
   }
+  return null
 }
 
 export async function fetchFacts(specId: string, factsId: string): Promise<FactsRecord | null> {
