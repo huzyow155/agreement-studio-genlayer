@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
 import type { RulingRecord } from '../types/contract'
 import { STUDIONET_EXPLORER_URL, CONTRACT_ADDRESS } from '../config/chain'
-import { ShieldCheck, AlertOctagon, CheckCircle2, Copy, Check, ExternalLink } from 'lucide-react'
+import { useWallet } from '../context/WalletContext'
+import { useTransaction } from '../context/TransactionContext'
+import { submitAdjudicate, getWriteClient } from '../services/contractService'
+import { ShieldCheck, AlertOctagon, CheckCircle2, Copy, Check, ExternalLink, RotateCcw } from 'lucide-react'
 
 interface AdjudicationResultViewProps {
   ruling: RulingRecord
 }
 
 export const AdjudicationResultView: React.FC<AdjudicationResultViewProps> = ({ ruling }) => {
+  const { account, selectedWallet } = useWallet()
+  const { executeTransaction, isBusy } = useTransaction()
   const [copiedHash, setCopiedHash] = useState(false)
 
   const isUnreliable = ruling.verdict === 'UNRELIABLE'
@@ -18,6 +23,17 @@ export const AdjudicationResultView: React.FC<AdjudicationResultViewProps> = ({ 
     navigator.clipboard.writeText(ruling.spec_hash)
     setCopiedHash(true)
     setTimeout(() => setCopiedHash(false), 2000)
+  }
+
+  const handleAttemptReadjudicate = async () => {
+    if (!account || !selectedWallet) return
+    const client = getWriteClient(account, selectedWallet.provider)
+    await executeTransaction(
+      'Attempt Re-Adjudication',
+      () => submitAdjudicate(client, ruling.spec_id, ruling.facts_id),
+      undefined,
+      { specId: ruling.spec_id, factsId: ruling.facts_id }
+    )
   }
 
   return (
@@ -99,6 +115,24 @@ export const AdjudicationResultView: React.FC<AdjudicationResultViewProps> = ({ 
           </div>
         </div>
       </div>
+
+      {/* Re-Adjudication Test Action */}
+      {account && (
+        <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs border-t border-[#f4f4f5]">
+          <span className="text-[#71717a]">
+            Rule test: Verify contract rejects second adjudication on identical facts key.
+          </span>
+          <button
+            type="button"
+            onClick={handleAttemptReadjudicate}
+            disabled={isBusy}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#faf9f5] hover:bg-[#f4f4f5] text-[#18181b] border border-[#d4d4d8] rounded-md font-mono text-xs transition-colors cursor-pointer disabled:opacity-50 self-start sm:self-auto shrink-0"
+          >
+            <RotateCcw className="w-3 h-3 text-[#71717a]" />
+            <span>Attempt Re-Adjudication</span>
+          </button>
+        </div>
+      )}
 
       {/* Explorer Verification Link */}
       <div className="pt-2 flex items-center justify-between text-xs text-[#71717a] border-t border-[#f4f4f5]">

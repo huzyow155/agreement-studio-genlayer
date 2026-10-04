@@ -99,13 +99,13 @@ export const FactsSection: React.FC<FactsSectionProps> = ({ spec, facts, onFacts
           </p>
         </div>
 
-        {isParty && !facts && (
+        {isParty && (
           <button
             onClick={() => setIsStipulating(!isStipulating)}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] text-white hover:bg-[#27272a] rounded-md text-xs font-medium transition-all shadow-xs cursor-pointer self-start sm:self-auto"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>{isStipulating ? 'Cancel' : 'Stipulate New Facts'}</span>
+            <span>{isStipulating ? 'Cancel' : facts ? 'Stipulate Facts Form' : 'Stipulate New Facts'}</span>
           </button>
         )}
       </div>

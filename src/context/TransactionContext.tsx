@@ -191,16 +191,23 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
 
         if (executionResult === 'ERROR' || leader?.result?.status === 'rollback') {
           const leaderResult = leader?.result as any
-          const payload =
-            typeof leaderResult?.payload === 'string'
-              ? leaderResult.payload
-              : JSON.stringify(leaderResult?.payload || 'Transaction execution rolled back by validators')
+          let payload = 'Transaction execution stopped by contract rules'
+          if (typeof leaderResult?.payload === 'string') {
+            payload = leaderResult.payload
+          } else if (typeof leaderResult === 'string') {
+            try {
+              const decoded = atob(leaderResult).replace(/^[\x00-\x1f]/, '').trim()
+              if (decoded && decoded.length > 2) payload = decoded
+            } catch {
+              payload = leaderResult
+            }
+          }
 
           localStorage.removeItem(STORAGE_KEY)
           setTxState((prev) => ({
             ...prev,
             phase: 'FAILED',
-            humanMessage: 'Execution stopped by contract rules',
+            humanMessage: 'Contract Rule Triggered',
             errorMessage: payload,
             errorPayload: payload,
           }))
