@@ -90,20 +90,24 @@ export const App: React.FC = () => {
       setSpec(loadedSpec)
 
       if (loadedSpec) {
-        // Load all scenarios
-        const scList: ScenarioRecord[] = []
+        // Load all scenarios, suite report, and latest facts in parallel
+        const scPromises = []
         for (let i = 1; i <= loadedSpec.n_scenarios; i++) {
-          const sc = await fetchScenario(specId, i)
-          if (sc) scList.push(sc)
+          scPromises.push(fetchScenario(specId, i))
         }
-        setScenarios(scList)
 
-        // Load suite report
-        const rep = await fetchSuiteReport(specId)
+        const [scResults, rep, latestFactsId] = await Promise.all([
+          Promise.all(scPromises),
+          fetchSuiteReport(specId),
+          fetchLatestFactsId(specId),
+        ])
+
+        const scList = scResults.filter(Boolean) as ScenarioRecord[]
+        setScenarios(scList)
         setSuiteReport(rep)
 
         // Load facts
-        const factsId = (await fetchLatestFactsId(specId)) || DEFAULT_FACTS_ID
+        const factsId = latestFactsId || DEFAULT_FACTS_ID
         const loadedFacts = await fetchFacts(specId, factsId)
         setFacts(loadedFacts)
 
